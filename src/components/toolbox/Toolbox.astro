@@ -1,0 +1,317 @@
+---
+import site from '@/content/site';
+import SectionHead from '@/components/global/SectionHead.astro';
+import StickerSheet from './StickerSheet.tsx';
+
+const { toolbox } = site;
+---
+
+<section id="toolbox" class="toolbox wrap" aria-labelledby="toolbox-title">
+  <SectionHead num="03" kicker={toolbox.kicker} id="toolbox-title">
+    {toolbox.title}
+    <p slot="after" class="section-intro">{toolbox.intro}</p>
+  </SectionHead>
+  <StickerSheet client:visible groups={toolbox.groups} />
+</section>
+
+<style is:global>
+  .toolbox {
+    padding-block: 5rem;
+  }
+  @media (min-width: 64rem) {
+    .toolbox {
+      padding-block: 6rem;
+    }
+  }
+  .stickers {
+    margin-top: 2.5rem;
+  }
+
+  /* ---------- mobile-first: a printed sticker sheet ---------- */
+  .lid {
+    position: relative;
+    display: grid;
+    gap: 1.75rem;
+    padding: 2.75rem 1rem 1.75rem;
+    background: var(--paper-hi);
+    color: var(--ink);
+    border: 3px solid var(--line);
+    border-radius: 18px;
+    box-shadow: 8px 8px 0 0 var(--line);
+  }
+  [data-theme='dark'] .lid {
+    box-shadow: 8px 8px 0 0 var(--lid-edge);
+  }
+  .lid__logo {
+    display: none;
+  }
+  .lid__sheet-label {
+    position: absolute;
+    top: 0.85rem;
+    left: 1rem;
+    right: 1rem;
+    padding-bottom: 0.5rem;
+    color: #59534a;
+    border-bottom: 2px dashed rgb(20 19 17 / 0.3);
+  }
+  .zone {
+    display: grid;
+    gap: 0.25rem;
+  }
+  .zone + .zone {
+    padding-top: 1.5rem;
+    border-top: 2px dashed rgb(20 19 17 / 0.3);
+  }
+  .zone__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem 0.55rem;
+    padding: 0.4rem 0.25rem;
+  }
+  .zone__item {
+    position: relative;
+  }
+
+  /* group label: a starburst sticker */
+  .burst {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 4.75rem;
+    height: 4.75rem;
+    margin: 0 0 0 -0.25rem;
+    font-size: 1.05rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    text-transform: lowercase;
+    color: var(--ink);
+  }
+  .burst svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+  .burst__edge {
+    fill: var(--sticker-edge);
+    stroke: var(--ink);
+    stroke-width: 11;
+    stroke-linejoin: round;
+  }
+  .burst__fill {
+    fill: var(--lime);
+    stroke: var(--sticker-edge);
+    stroke-width: 6;
+    stroke-linejoin: round;
+  }
+  .burst[data-color='tomato'] .burst__fill {
+    fill: var(--tomato);
+  }
+  .burst[data-color='paper'] .burst__fill {
+    fill: var(--paper);
+  }
+  .burst[data-color='ink'] .burst__fill {
+    fill: var(--ink);
+  }
+  .burst[data-color='ink'] {
+    color: var(--lime);
+  }
+  .burst span {
+    position: relative;
+  }
+
+  /* the stickers */
+  .stk {
+    --x: 0px;
+    --y: 0px;
+    --r: 0deg;
+    --bg: var(--paper-hi);
+    --fg: var(--ink);
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.6rem;
+    padding: 0.5rem 0.9rem;
+    font-family: var(--font-display);
+    font-size: calc(var(--fs, 1) * 0.86rem);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.015em;
+    white-space: nowrap;
+    color: var(--fg);
+    background: var(--bg);
+    border: 3px solid var(--sticker-edge);
+    border-radius: 999px;
+    box-shadow:
+      0 0 0 2px var(--ink),
+      2px 3px 0 2px var(--ink);
+    transform: translate(var(--x), var(--y)) rotate(var(--r));
+    cursor: pointer;
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+    transition:
+      box-shadow 0.15s,
+      scale 0.25s var(--ease-spring);
+  }
+  .stk:focus-visible {
+    outline: 3px solid var(--lime);
+    outline-offset: 4px;
+  }
+  .stk--lime {
+    --bg: var(--lime);
+  }
+  .stk--tomato {
+    --bg: var(--tomato);
+  }
+  .stk--ink {
+    --bg: var(--ink);
+    --fg: var(--paper);
+  }
+  .stk--paper {
+    --bg: var(--paper-hi);
+  }
+  .stk--rect {
+    border-radius: 9px;
+  }
+  .stk--round {
+    min-width: 3.4rem;
+    min-height: 3.4rem;
+    padding: 0.5rem;
+    border-radius: 50%;
+  }
+  .stk.is-snapping {
+    transition:
+      transform 0.65s var(--ease-spring),
+      box-shadow 0.15s;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .stk.is-wiggle {
+      animation: stk-wiggle 0.5s var(--ease-out);
+    }
+  }
+  @keyframes stk-wiggle {
+    0%,
+    100% {
+      transform: translate(var(--x), var(--y)) rotate(var(--r)) scale(1);
+    }
+    30% {
+      transform: translate(var(--x), var(--y)) rotate(calc(var(--r) - 10deg)) scale(1.12);
+    }
+    60% {
+      transform: translate(var(--x), var(--y)) rotate(calc(var(--r) + 7deg)) scale(1.06);
+    }
+  }
+
+  .stickers__foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 1.75rem;
+  }
+  .stickers__hint {
+    color: var(--muted);
+  }
+  .stickers__foot .btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: 3px 3px 0 0 var(--line);
+  }
+
+  /* ---------- desktop: the laptop lid ---------- */
+  @media (min-width: 64rem) {
+    .lid {
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+      grid-template-rows: auto auto;
+      gap: 3rem 5rem;
+      padding: 3.25rem 3.25rem 3rem;
+      background:
+        radial-gradient(120% 90% at 50% 0%, rgb(255 255 255 / 0.05), transparent 60%),
+        var(--lid);
+      color: var(--paper);
+      border: 3px solid var(--ink);
+      border-radius: 34px;
+      box-shadow:
+        inset 0 0 0 6px var(--lid-edge),
+        12px 12px 0 0 var(--ink);
+    }
+    [data-theme='dark'] .lid {
+      border-color: var(--lid-edge);
+      box-shadow:
+        inset 0 0 0 6px #34312b,
+        12px 12px 0 0 #000,
+        12px 12px 0 3px var(--lid-edge);
+    }
+    .lid__sheet-label {
+      display: none;
+    }
+    .lid__logo {
+      display: block;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 7rem;
+      height: 7rem;
+      translate: -50% -50%;
+      color: var(--paper);
+      opacity: 0.85;
+      pointer-events: none;
+    }
+    .zone {
+      grid-template-columns: auto minmax(0, 1fr);
+      align-content: start;
+      align-items: start;
+      gap: 0.75rem;
+      z-index: 1;
+    }
+    .zone + .zone {
+      padding-top: 0;
+      border-top: none;
+    }
+    .zone--build {
+      grid-column: 1;
+      grid-row: 1;
+    }
+    .zone--grow {
+      grid-column: 1;
+      grid-row: 2;
+      padding-left: 1.5rem;
+    }
+    .zone--design {
+      grid-column: 2;
+      grid-row: 1;
+      padding-top: 0.5rem;
+    }
+    .zone--ship {
+      grid-column: 2;
+      grid-row: 2;
+    }
+    .zone__list {
+      gap: 1rem 0.85rem;
+    }
+    .stk {
+      font-size: calc(var(--fs, 1) * 1.02rem);
+    }
+    .can-drag .stk {
+      cursor: grab;
+      touch-action: none;
+    }
+    .can-drag .stk.is-lifted {
+      cursor: grabbing;
+      scale: 1.1;
+      box-shadow:
+        0 0 0 2px var(--ink),
+        7px 10px 0 2px rgb(0 0 0 / 0.45);
+    }
+    .burst {
+      width: 6rem;
+      height: 6rem;
+      font-size: 1.2rem;
+    }
+  }
+</style>
