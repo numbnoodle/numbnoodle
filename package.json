@@ -8,7 +8,9 @@
     "build": "astro check && astro build",
     "preview": "astro preview",
     "check": "astro check",
-    "shots": "playwright test tests/visual.spec.ts"
+    "test:e2e": "playwright test",
+    "test:visual": "playwright test tests/visual.spec.ts",
+    "shots": "node scripts/shots.mjs"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.10",

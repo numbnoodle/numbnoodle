@@ -1,0 +1,132 @@
+---
+/** Mobile/tablet chapter menu: a compact "Jump to" disclosure. Hidden once the desktop rail shows. */
+import Icon from '@/components/global/Icon.astro';
+import type { Chapter } from './chapters';
+
+interface Props {
+  chapters: Chapter[];
+}
+const { chapters } = Astro.props;
+---
+
+<nav class="case-jump" aria-label="Chapters (jump to)">
+  <details class="case-jump__box" data-case-jump>
+    <summary class="case-jump__summary">
+      <span class="case-jump__label">Jump to</span>
+      <span class="label case-jump__count">{String(chapters.length).padStart(2, '0')} chapters</span>
+      <span class="case-jump__chev" aria-hidden="true"><Icon name="arrow-down" class="size-4" stroke={3} /></span>
+    </summary>
+    <ol class="case-jump__list">
+      {
+        chapters.map((c) => (
+          <li>
+            <a href={`#${c.anchor}`} class="case-jump__link">
+              <span class="case-jump__num" aria-hidden="true">
+                {c.num}
+              </span>
+              {c.title}
+            </a>
+          </li>
+        ))
+      }
+    </ol>
+  </details>
+</nav>
+
+<style is:global>
+  .case-jump {
+    margin-bottom: 2.5rem;
+  }
+  @media (min-width: 64rem) {
+    .case-jump {
+      display: none;
+    }
+  }
+  .case-jump__box {
+    background: var(--surface);
+    border: var(--bw) solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: 4px 4px 0 0 var(--line);
+  }
+  .case-jump__summary {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-height: 3.25rem;
+    padding: 0.6rem 0.75rem 0.6rem 1rem;
+    list-style: none;
+    cursor: pointer;
+    border-radius: calc(var(--radius) - 3px);
+  }
+  .case-jump__summary::-webkit-details-marker {
+    display: none;
+  }
+  .case-jump__label {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 1.1875rem;
+    letter-spacing: -0.02em;
+  }
+  .case-jump__count {
+    margin-right: auto;
+    color: var(--muted);
+  }
+  .case-jump__chev {
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    color: var(--ink);
+    background: var(--lime);
+    border: 2px solid var(--ink);
+    border-radius: 50%;
+    transition: rotate 0.4s var(--ease-spring);
+  }
+  .case-jump__box[open] .case-jump__chev {
+    rotate: 180deg;
+  }
+  .case-jump__box[open] .case-jump__summary {
+    border-bottom: 2px dashed color-mix(in oklab, var(--line) 35%, transparent);
+    border-radius: calc(var(--radius) - 3px) calc(var(--radius) - 3px) 0 0;
+  }
+  .case-jump__list {
+    display: grid;
+    padding: 0.4rem 0.5rem 0.6rem;
+  }
+  .case-jump__link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-height: 2.9rem;
+    padding: 0.35rem 0.5rem;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.0625rem;
+    letter-spacing: -0.01em;
+    text-decoration: none;
+    border-radius: 10px;
+  }
+  .case-jump__link:hover {
+    background: var(--sunken);
+  }
+  .case-jump__num {
+    display: inline-grid;
+    place-items: center;
+    min-width: 2.25rem;
+    height: 1.6rem;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 0.75rem;
+    color: var(--bg);
+    background: var(--fg);
+    border-radius: 6px;
+  }
+</style>
+
+<script>
+  // close the menu after a jump so it doesn't sit open at the top
+  const box = document.querySelector<HTMLDetailsElement>('[data-case-jump]');
+  box?.addEventListener('click', (e) => {
+    if ((e.target as HTMLElement).closest('a')) box.open = false;
+  });
+</script>

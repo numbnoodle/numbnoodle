@@ -1,0 +1,400 @@
+---
+/**
+ * The opened case file: a folder tab, the product box strip, the name huge,
+ * the numbers in a ruled grid, and the hats worn. Mirrors LaunchCard so the
+ * homepage box and this page read as the same object.
+ */
+import type { Project } from '@/content/site';
+import Icon from '@/components/global/Icon.astro';
+import TodoNote from '@/components/global/TodoNote.astro';
+import Ticker from '@/components/shipped/Ticker.astro';
+import { fileNum } from './chapters';
+
+interface Props {
+  project: Project;
+  index: number;
+}
+const { project: p, index } = Astro.props;
+const num = fileNum(index);
+
+// same deterministic barcode recipe as the homepage box
+const bars = [...`${p.name}${p.urlLabel}`].flatMap((ch, i) => {
+  const c = ch.charCodeAt(0);
+  return [1 + (c % 3), 1 + ((c >> 2) % 2) + (i % 2)];
+});
+let bx = 0;
+const rects = bars.map((w, i) => {
+  const r = { x: bx, w, on: i % 2 === 0 };
+  bx += w;
+  return r;
+});
+const stampText = `CASE FILE ${num} · ${p.urlLabel.toUpperCase()} · `;
+---
+
+<header class:list={['case-head wrap', `case-head--${p.accent}`]}>
+  <a href="/#shipped" class="btn btn-sm case-head__back">
+    <Icon name="arrow-right" class="size-4 rotate-180" />
+    All case files
+  </a>
+
+  <div class="case-file">
+    <p class="case-file__tab label">case file {num}</p>
+
+    <div class="case-file__strip">
+      <span class="label case-file__live"><span class="case-file__live-dot" aria-hidden="true"></span>live</span>
+      <span class="label case-file__url">{p.urlLabel}</span>
+    </div>
+
+    <div class="case-file__body">
+      <div class="case-file__main">
+        <p class="label case-file__role">
+          {p.role}{p.period && <span class="case-file__period"> · {p.period}</span>}
+        </p>
+        <h1 id="case-title" class="case-file__name">{p.name}</h1>
+        <p class="case-file__pitch">{p.pitch}</p>
+        {p.pitchTodo && <TodoNote class="case-file__todo">{p.pitchTodo}</TodoNote>}
+
+        <div class="case-file__actions">
+          <a href={p.url} class:list={['btn', p.accent === 'lime' ? 'btn-lime' : 'btn-tomato']} target="_blank" rel="noopener">
+            Try it live <Icon name="arrow-up-right" class="size-5" /><span class="visually-hidden">(opens {p.urlLabel} in a new tab)</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="case-file__spec">
+        <div class="case-file__metrics">
+          <p class="label case-file__metrics-label">
+            {p.metricsLabel}
+            {p.metricsNote && <span class="case-file__metrics-note">{p.metricsNote}</span>}
+          </p>
+          <dl class="case-file__grid" style={`--n:${p.metrics.length}`}>
+            {
+              p.metrics.map((m) => (
+                <div class="case-file__metric">
+                  <dt class="case-file__metric-label">{m.label}</dt>
+                  <dd class="case-file__metric-value">
+                    <Ticker metric={m} />
+                  </dd>
+                </div>
+              ))
+            }
+          </dl>
+        </div>
+
+        <div class="case-file__hats">
+          <p class="label">hats worn</p>
+          <ul class="case-file__hat-list">
+            {p.hats.map((h) => <li class="pill">{h}</li>)}
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="case-file__foot">
+      <p class="label case-file__assembled">{p.assembledBy}</p>
+      <svg class="case-file__barcode" viewBox={`0 0 ${bx} 30`} preserveAspectRatio="none" aria-hidden="true">
+        {rects.filter((r) => r.on).map((r) => <rect x={r.x} y="0" width={r.w} height="30" />)}
+      </svg>
+    </div>
+
+    <svg class="case-file__stamp" viewBox="0 0 120 120" aria-hidden="true">
+      <defs>
+        <path id={`case-stamp-${p.slug}`} d="M60 60 m-44 0 a44 44 0 1 1 88 0 a44 44 0 1 1 -88 0"></path>
+      </defs>
+      <circle cx="60" cy="60" r="57" class="case-file__stamp-ring"></circle>
+      <circle cx="60" cy="60" r="31" class="case-file__stamp-core"></circle>
+      <text class="case-file__stamp-text"><textPath href={`#case-stamp-${p.slug}`} textLength="270">{stampText}</textPath></text>
+      <text class="case-file__stamp-num" x="60" y="71" text-anchor="middle">{num}</text>
+    </svg>
+  </div>
+</header>
+
+<style is:global>
+  .case-head {
+    --accent: var(--lime);
+    padding-block: 1.25rem 3rem;
+  }
+  .case-head--tomato {
+    --accent: var(--tomato);
+  }
+  @media (min-width: 64rem) {
+    .case-head {
+      padding-block: 2rem 5rem;
+    }
+  }
+  .case-head__back {
+    margin-bottom: 3.75rem;
+  }
+
+  /* ---------- the opened file ---------- */
+  .case-file {
+    position: relative;
+    background: var(--surface);
+    border: 3px solid var(--line);
+    border-radius: 0 18px 18px 18px;
+    box-shadow:
+      10px 10px 0 0 var(--accent),
+      10px 10px 0 3px var(--line);
+  }
+  @media (min-width: 64rem) {
+    .case-file {
+      box-shadow:
+        14px 14px 0 0 var(--accent),
+        14px 14px 0 3px var(--line);
+    }
+  }
+  /* folder tab */
+  .case-file__tab {
+    position: absolute;
+    bottom: 100%;
+    left: -3px;
+    padding: 0.6rem 1.1rem 0.5rem;
+    color: var(--bg);
+    background: var(--fg);
+    border: 3px solid var(--line);
+    border-bottom: 0;
+    border-radius: 12px 12px 0 0;
+  }
+  .case-file__strip {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem 1.25rem;
+    padding: 0.75rem 1.1rem;
+    color: var(--ink);
+    background: var(--accent);
+    border-bottom: 3px solid var(--line);
+    border-radius: 0 15px 0 0;
+  }
+  .case-file__live {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .case-file__live-dot {
+    width: 0.6rem;
+    height: 0.6rem;
+    border-radius: 50%;
+    background: var(--ink);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .case-file__live-dot {
+      animation: nn-blink 1.4s steps(1) infinite;
+    }
+  }
+  .case-file__url {
+    margin-left: auto;
+    text-transform: none;
+  }
+  @media (min-width: 64rem) {
+    .case-file__url {
+      margin-right: 10.5rem;
+    }
+  }
+
+  .case-file__body {
+    display: grid;
+    gap: 2.25rem;
+    padding: 1.4rem 1.1rem 1.75rem;
+  }
+  @media (min-width: 48rem) {
+    .case-file__body {
+      padding: 2rem 2rem 2.25rem;
+    }
+  }
+  @media (min-width: 64rem) {
+    .case-file__body {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 26rem);
+      gap: 3.5rem;
+      padding: 2.75rem 2.75rem 3rem;
+    }
+  }
+  .case-file__role {
+    color: var(--muted);
+  }
+  .case-file__period {
+    white-space: nowrap;
+  }
+  .case-file__main {
+    container-type: inline-size;
+  }
+  .case-file__name {
+    margin-top: 0.85rem;
+    /* fallback for browsers without container units, then sized from the
+       column, not the viewport: "Coins.me" is ~3.75em wide */
+    font-size: var(--text-display);
+    font-size: clamp(3rem, 23cqi, 9.5rem);
+    line-height: 0.84;
+    letter-spacing: -0.055em;
+    overflow-wrap: anywhere;
+  }
+  .case-file__pitch {
+    margin-top: 1.25rem;
+    max-width: 30ch;
+    font-size: var(--text-lead);
+    line-height: 1.4;
+  }
+  @media (min-width: 64rem) {
+    .case-file__pitch {
+      font-size: clamp(1.375rem, 0.9rem + 0.8vw, 1.75rem);
+      line-height: 1.32;
+    }
+  }
+  .case-file__todo {
+    margin-top: 1rem;
+    max-width: 34rem;
+  }
+  .case-file__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.9rem;
+    margin-top: 2rem;
+  }
+
+  /* spec column: numbers + hats */
+  .case-file__metrics-label {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .case-file__metrics-note {
+    padding: 0.15rem 0.5rem;
+    color: var(--ink);
+    background: var(--accent);
+    border: 2px solid var(--ink);
+    border-radius: 999px;
+    text-transform: none;
+    letter-spacing: 0.02em;
+  }
+  .case-file__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-top: 0.75rem;
+    border: var(--bw) solid var(--line);
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--bg);
+  }
+  @media (min-width: 40rem) and (max-width: 63.99rem) {
+    .case-file__grid {
+      grid-template-columns: repeat(var(--n), minmax(0, 1fr));
+    }
+  }
+  .case-file__metric {
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: flex-end;
+    gap: 0.45rem;
+    padding: 0.85rem 0.8rem 0.95rem;
+    border-right: var(--bw) solid var(--line);
+    border-bottom: var(--bw) solid var(--line);
+    margin: 0 calc(var(--bw) * -1) calc(var(--bw) * -1) 0;
+  }
+  @media (min-width: 26rem) {
+    .case-file__metric {
+      padding: 1rem 1rem 1.1rem;
+    }
+  }
+  .case-file__metric-value {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(2rem, 1.5rem + 1.8vw, 3.1rem);
+    line-height: 1;
+    letter-spacing: -0.04em;
+  }
+  .case-file__metric-label {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    line-height: 1.3;
+    color: var(--muted);
+  }
+  .case-file__hats {
+    margin-top: 2rem;
+  }
+  .case-file__hat-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin-top: 0.6rem;
+  }
+
+  .case-file__foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.85rem 1.1rem;
+    border-top: 3px dashed var(--line);
+  }
+  @media (min-width: 64rem) {
+    .case-file__foot {
+      padding: 1rem 2.75rem;
+    }
+  }
+  .case-file__assembled {
+    color: var(--muted);
+  }
+  .case-file__barcode {
+    flex: none;
+    width: 7rem;
+    height: 1.9rem;
+    fill: var(--fg);
+  }
+
+  /* rubber stamp, slapped on the corner */
+  .case-file__stamp {
+    display: none;
+  }
+  @media (min-width: 64rem) {
+    .case-file__stamp {
+      display: block;
+      position: absolute;
+      top: -3.25rem;
+      right: 1.75rem;
+      width: 8.25rem;
+      height: 8.25rem;
+      rotate: 12deg;
+      transition: rotate 0.8s var(--ease-spring);
+    }
+    .case-file:hover .case-file__stamp {
+      rotate: -8deg;
+    }
+  }
+  .case-file__stamp-ring {
+    fill: var(--accent);
+    stroke: var(--ink);
+    stroke-width: 3;
+  }
+  .case-file__stamp-core {
+    fill: var(--paper-hi);
+    stroke: var(--ink);
+    stroke-width: 3;
+  }
+  .case-file__stamp-text {
+    font-family: var(--font-mono);
+    font-weight: 800;
+    font-size: 10.5px;
+    letter-spacing: 0.06em;
+    fill: var(--ink);
+  }
+  .case-file__stamp-num {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 31px;
+    letter-spacing: -0.04em;
+    fill: var(--ink);
+  }
+
+  /* numbers roll on load (they're above the fold here). Pure CSS: no JS, no flash. */
+  @keyframes case-roll {
+    from {
+      transform: translateY(0);
+    }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .case-file .odo__strip {
+      animation: case-roll 1.3s cubic-bezier(0.2, 0.85, 0.25, 1.03) calc(var(--i) * 90ms + 350ms) backwards;
+    }
+  }
+</style>

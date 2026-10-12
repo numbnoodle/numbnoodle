@@ -1,0 +1,187 @@
+---
+/** One numbered chapter of a case study: rule, h2, words, points, images, TODO. */
+import { flags } from '@/content/site';
+import TodoNote from '@/components/global/TodoNote.astro';
+import ImageSlot from './ImageSlot.astro';
+import type { Chapter } from './chapters';
+
+interface Props {
+  chapter: Chapter;
+  total: number;
+  index: number;
+}
+const { chapter: c, total, index } = Astro.props;
+const totalLabel = String(total).padStart(2, '0');
+const hasMain = c.body.length > 0 || (c.points?.length ?? 0) > 0;
+const isEmpty = !hasMain;
+// placeholders only exist while TODO notes are on; real images always render
+const images = (c.images ?? []).filter((img) => img.src || flags.showTodoNotes);
+const todo = flags.showTodoNotes ? c.todo : undefined;
+---
+
+<section
+  id={c.anchor}
+  class:list={['case-ch', isEmpty && 'case-ch--empty']}
+  aria-labelledby={`${c.anchor}-title`}
+  data-chapter={index}
+>
+  <div class="case-ch__rule">
+    <span class="case-ch__num" aria-hidden="true">{c.num}</span>
+    <span class="label case-ch__of"><span class="visually-hidden">Chapter {c.num} </span>of {totalLabel}</span>
+  </div>
+  <h2 id={`${c.anchor}-title`} class="case-ch__title">{c.title}</h2>
+
+  <div class:list={['case-ch__grid', !todo && 'case-ch__grid--solo']}>
+    {
+      hasMain && (
+        <div class="case-ch__main">
+          {c.body.map((para) => (
+            <p class="case-ch__para">{para}</p>
+          ))}
+          {c.points && c.points.length > 0 && (
+            <ul class="case-ch__points">
+              {c.points.map((pt) => (
+                <li class="pill">{pt}</li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )
+    }
+    {
+      todo && (
+        <div class="case-ch__margin">
+          <TodoNote class="case-ch__todo">{todo}</TodoNote>
+        </div>
+      )
+    }
+  </div>
+
+  {
+    images.length > 0 && (
+      <div class="case-ch__images">
+        {images.map((img, i) => (
+          <ImageSlot image={img} fig={`${c.num}.${i + 1}`} />
+        ))}
+      </div>
+    )
+  }
+</section>
+
+<style is:global>
+  .case-ch {
+    padding-block: 2.5rem 3rem;
+    border-top: 3px dashed color-mix(in oklab, var(--line) 30%, transparent);
+  }
+  .case-ch:first-of-type {
+    border-top: 0;
+    padding-top: 0.5rem;
+  }
+  @media (min-width: 64rem) {
+    .case-ch {
+      padding-block: 3.5rem 4.25rem;
+    }
+  }
+  .case-ch__rule {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .case-ch__num {
+    display: inline-grid;
+    place-items: center;
+    min-width: 3rem;
+    height: 2.25rem;
+    padding-inline: 0.5rem;
+    font-family: var(--font-mono);
+    font-weight: 800;
+    font-size: 1rem;
+    letter-spacing: -0.01em;
+    color: var(--bg);
+    background: var(--fg);
+    border-radius: 8px;
+    rotate: -4deg;
+  }
+  .case-ch:nth-of-type(even) .case-ch__num {
+    rotate: 3deg;
+  }
+  .case-ch__of {
+    color: var(--muted);
+  }
+  .case-ch__title {
+    margin-top: 0.9rem;
+    font-size: clamp(2.25rem, 1.4rem + 3.2vw, 4.25rem);
+    line-height: 0.92;
+    letter-spacing: -0.04em;
+  }
+
+  .case-ch__grid {
+    display: grid;
+    gap: 1.5rem;
+    margin-top: 1.4rem;
+  }
+  .case-ch--empty .case-ch__grid {
+    margin-top: 1.1rem;
+  }
+  @media (min-width: 80rem) {
+    .case-ch__grid {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 17rem);
+      column-gap: 3rem;
+      align-items: start;
+    }
+    .case-ch__margin {
+      padding-top: 0.35rem;
+    }
+    /* nothing written yet (the TODO is the content), or no TODO at all: one column */
+    .case-ch--empty .case-ch__grid,
+    .case-ch__grid--solo {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  .case-ch__para {
+    max-width: 40ch;
+    font-size: var(--text-lead);
+    line-height: 1.45;
+  }
+  .case-ch__para + .case-ch__para {
+    margin-top: 1rem;
+  }
+  .case-ch__points {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin-top: 1.4rem;
+  }
+  .case-ch__points:first-child {
+    margin-top: 0;
+  }
+  .case-ch__todo {
+    max-width: 34rem;
+  }
+  .case-ch--empty .case-ch__todo {
+    font-size: 0.875rem;
+  }
+  @media (min-width: 80rem) {
+    .case-ch:not(.case-ch--empty) .case-ch__todo {
+      rotate: 1.4deg;
+    }
+  }
+
+  .case-ch__images {
+    display: grid;
+    gap: 2rem;
+    margin-top: 2.25rem;
+  }
+  @media (min-width: 40rem) {
+    .case-ch__images {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.75rem;
+    }
+  }
+  .case-ch__images > :nth-child(odd) {
+    rotate: -0.6deg;
+  }
+  .case-ch__images > :nth-child(even) {
+    rotate: 0.8deg;
+  }
+</style>

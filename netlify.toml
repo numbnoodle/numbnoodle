@@ -1,0 +1,10 @@
+# Netlify: static Astro build. Response headers live in public/_headers
+# (shared with Cloudflare Pages). dist/404.html is served for unknown paths
+# automatically, so no redirect rules are needed.
+
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"

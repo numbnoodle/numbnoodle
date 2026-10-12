@@ -1,0 +1,87 @@
+---
+import Base from '@/layouts/Base.astro';
+import Footer from '@/components/contact/Footer.astro';
+import CaseHeader from '@/components/case/CaseHeader.astro';
+import CaseToc from '@/components/case/CaseToc.astro';
+import CaseJump from '@/components/case/CaseJump.astro';
+import CaseChapter from '@/components/case/CaseChapter.astro';
+import NextCase from '@/components/case/NextCase.astro';
+import { chaptersOf, fileNum } from '@/components/case/chapters';
+import { projects, type Project } from '@/content/site';
+import { noodleThrough } from '@/lib/noodle';
+
+export function getStaticPaths() {
+  return projects.map((project, index) => ({
+    params: { slug: project.slug },
+    props: { project, index },
+  }));
+}
+
+interface Props {
+  project: Project;
+  index: number;
+}
+const { project, index } = Astro.props;
+const nextIndex = (index + 1) % projects.length;
+const next = projects[nextIndex]!;
+const chapters = chaptersOf(project);
+// a little sign-off squiggle under the last chapter
+const eof = noodleThrough([60, 130, 200], { start: 4, end: 296, vScale: 0.3, map: (u, v) => [u, 24 - v] });
+---
+
+<Base
+  path={`/work/${project.slug}`}
+  title={`${project.name} case study · Gaurav Pawar (numbnoodle)`}
+  description={project.pitch}
+>
+  <article class="case" aria-labelledby="case-title">
+    <CaseHeader project={project} index={index} />
+
+    <div class="case-layout wrap">
+      <CaseToc chapters={chapters} project={project} index={index} />
+      <div class="case-flow">
+        <CaseJump chapters={chapters} />
+        {chapters.map((c, i) => <CaseChapter chapter={c} index={i} total={chapters.length} />)}
+        <div class="case-eof" aria-hidden="true">
+          <svg class="case-eof__noodle" viewBox="0 0 300 48">
+            <path class="noodle" d={eof} stroke-width="3.5"></path>
+          </svg>
+          <span class="label">end of case file {fileNum(index)}</span>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  {next.slug !== project.slug && <NextCase project={next} index={nextIndex} />}
+
+  <Footer slot="footer" />
+</Base>
+
+<style is:global>
+  .case-layout {
+    display: grid;
+  }
+  @media (min-width: 64rem) {
+    .case-layout {
+      grid-template-columns: 15.5rem minmax(0, 1fr);
+      column-gap: clamp(3rem, 1rem + 3vw, 5.5rem);
+    }
+  }
+  .case-flow {
+    min-width: 0;
+  }
+  .case-eof {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding-top: 0.5rem;
+    color: var(--muted);
+  }
+  .case-eof__noodle {
+    flex: none;
+    width: 9rem;
+    height: auto;
+    overflow: visible;
+    color: var(--fg);
+  }
+</style>

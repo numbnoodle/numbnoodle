@@ -1,0 +1,37 @@
+# Response headers for Cloudflare Pages and Netlify (both read this file).
+#
+# Both hosts MERGE headers when several rules match a path, joining duplicate
+# names with commas. So `/*` sets only security headers, and every
+# Cache-Control lives on paths that don't overlap with each other.
+# HTML that isn't listed below gets the hosts' default, which is already
+# `public, max-age=0, must-revalidate`.
+
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
+  X-Frame-Options: DENY
+  Content-Security-Policy: frame-ancestors 'none'; base-uri 'self'; object-src 'none'
+  Cross-Origin-Opener-Policy: same-origin
+
+# Hashed build output (JS, CSS, self-hosted fonts in /_astro/fonts/): never changes.
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# HTML: always revalidate so a deploy shows up immediately.
+/
+  Cache-Control: public, max-age=0, must-revalidate
+/work/*
+  Cache-Control: public, max-age=0, must-revalidate
+
+# Icons and the share card: stable names, safe to cache for a day.
+/favicon.svg
+  Cache-Control: public, max-age=86400
+/favicon.ico
+  Cache-Control: public, max-age=86400
+/apple-touch-icon.png
+  Cache-Control: public, max-age=86400
+/icon-512.png
+  Cache-Control: public, max-age=86400
+/og.png
+  Cache-Control: public, max-age=86400

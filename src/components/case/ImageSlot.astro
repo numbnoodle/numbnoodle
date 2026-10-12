@@ -1,0 +1,163 @@
+---
+/**
+ * A case-study image. With a `src` it's a real lazy image (dimensions read
+ * from the file in /public so there's no layout shift). Without one it's a
+ * designed placeholder slot with the TODO from site.ts, shown only while
+ * flags.showTodoNotes is on.
+ */
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import { imageMetadata } from 'astro/assets/utils';
+import { flags } from '@/content/site';
+
+interface Props {
+  image: { src?: string; alt: string; todo: string };
+  /** e.g. "03.1" */
+  fig: string;
+}
+const { image, fig } = Astro.props;
+
+let width = 1600;
+let height = 1200;
+if (image.src && image.src.startsWith('/')) {
+  try {
+    const file = path.join(process.cwd(), 'public', decodeURIComponent(image.src));
+    const meta = await imageMetadata(new Uint8Array(await fs.readFile(file)), image.src);
+    width = meta.width;
+    height = meta.height;
+  } catch {
+    /* unreadable: keep the 4:3 default */
+  }
+}
+---
+
+{
+  image.src ? (
+    <figure class="case-shot">
+      <img src={image.src} alt={image.alt} width={width} height={height} loading="lazy" decoding="async" />
+      <figcaption class="label case-shot__cap">fig {fig}</figcaption>
+    </figure>
+  ) : (
+    flags.showTodoNotes && (
+      <figure class="case-slot">
+        <div class="case-slot__frame">
+          <span class="case-slot__corner case-slot__corner--tl" aria-hidden="true" />
+          <span class="case-slot__corner case-slot__corner--tr" aria-hidden="true" />
+          <span class="case-slot__corner case-slot__corner--bl" aria-hidden="true" />
+          <span class="case-slot__corner case-slot__corner--br" aria-hidden="true" />
+          <p class="label case-slot__meta">
+            <span>fig {fig}</span>
+            <span>image slot</span>
+          </p>
+          <svg class="case-slot__glyph" viewBox="0 0 48 40" aria-hidden="true">
+            <rect x="2" y="2" width="44" height="36" rx="5" />
+            <circle cx="15" cy="13" r="4" />
+            <path d="M3 33 16 21l8 7 7-6 14 11" />
+          </svg>
+          <p class="case-slot__todo">
+            <strong>TODO(gaurav):</strong> {image.todo}
+          </p>
+        </div>
+        <figcaption class="case-slot__cap">{image.alt}</figcaption>
+      </figure>
+    )
+  )
+}
+
+<style is:global>
+  .case-shot img {
+    width: 100%;
+    height: auto;
+    background: var(--sunken);
+    border: var(--bw) solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: 5px 5px 0 0 var(--shadow);
+  }
+  .case-shot__cap {
+    margin-top: 0.7rem;
+    color: var(--muted);
+  }
+
+  .case-slot__frame {
+    position: relative;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    justify-items: center;
+    gap: 0.75rem;
+    aspect-ratio: 4 / 3;
+    padding: 0.85rem;
+    color: var(--fg);
+    background:
+      repeating-linear-gradient(-45deg, transparent 0 11px, color-mix(in oklab, var(--line) 9%, transparent) 11px 12.5px),
+      var(--sunken);
+    border: var(--bw) dashed var(--line);
+    border-radius: var(--radius);
+  }
+  .case-slot__meta {
+    justify-self: stretch;
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    color: var(--muted);
+  }
+  .case-slot__glyph {
+    align-self: center;
+    width: 3.25rem;
+    height: auto;
+    fill: none;
+    stroke: var(--fg);
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: 0.55;
+    rotate: -6deg;
+  }
+  .case-slot__todo {
+    justify-self: stretch;
+    padding: 0.55rem 0.7rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    line-height: 1.45;
+    color: var(--ink);
+    background: #fff3a8;
+    border: 2px dashed var(--ink);
+    border-radius: var(--radius-sm);
+    overflow-wrap: anywhere;
+  }
+  .case-slot__todo strong {
+    font-weight: 800;
+  }
+  .case-slot__cap {
+    margin-top: 0.7rem;
+    font-size: 0.9375rem;
+    line-height: 1.4;
+    color: var(--muted);
+  }
+  /* crop marks */
+  .case-slot__corner {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border: 0 solid var(--fg);
+  }
+  .case-slot__corner--tl {
+    top: -9px;
+    left: -9px;
+    border-width: 3px 0 0 3px;
+  }
+  .case-slot__corner--tr {
+    top: -9px;
+    right: -9px;
+    border-width: 3px 3px 0 0;
+  }
+  .case-slot__corner--bl {
+    bottom: -9px;
+    left: -9px;
+    border-width: 0 0 3px 3px;
+  }
+  .case-slot__corner--br {
+    bottom: -9px;
+    right: -9px;
+    border-width: 0 3px 3px 0;
+  }
+</style>
