@@ -1,0 +1,252 @@
+---
+import site from '@/content/site';
+import { noodleThrough } from '@/lib/noodle';
+
+const { manual } = site;
+const sig = noodleThrough([30, 84, 138, 192, 246], { start: 4, end: 292, vScale: 0.42, map: (u, v) => [u, 44 - v] });
+---
+
+<section id="manual" class="manual wrap" aria-labelledby="manual-title">
+  <div class="sheet">
+    <div class="sheet__tab">
+      <span class="label">{manual.file}</span>
+      <span class="label sheet__rev">{manual.revision}</span>
+    </div>
+
+    <div class="sheet__inner">
+      <header>
+        <p class="kicker"><span class="num">04</span>{manual.kicker}</p>
+        <h2 id="manual-title" class="section-title">{manual.title}</h2>
+      </header>
+
+      <p class="diff-hunk label" aria-hidden="true">@@ -1,1 +1,{manual.principles.length} @@ how startups usually work → how I work</p>
+
+      <ol class="diff">
+        <li class="diff__row diff__row--del" aria-hidden="true">
+          <span class="diff__sign">−</span>
+          <span class="diff__ver label">v0.0</span>
+          <p class="diff__title"><del>{manual.removed}</del></p>
+        </li>
+        {
+          manual.principles.map((p, i) => (
+            <li class="diff__row">
+              <span class="diff__sign" aria-hidden="true">+</span>
+              <span class="diff__ver label">v1.{i}</span>
+              <div>
+                <h3 class="diff__title">{p.title}</h3>
+                <p class="diff__body">{p.body}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+
+      <div class="sheet__sign">
+        <svg class="sig" data-sig viewBox="0 0 300 86" aria-hidden="true">
+          <path class="noodle" pathLength="1" d={sig} stroke-width="4"></path>
+          <path class="noodle" pathLength="1" d="M24 78 C 100 70, 200 72, 290 64" stroke-width="3"></path>
+        </svg>
+        <p class="label">— {manual.signature}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style is:global>
+  .manual {
+    padding-block: 4rem 5rem;
+  }
+  @media (min-width: 64rem) {
+    .manual {
+      padding-block: 6rem 7rem;
+    }
+  }
+  /* always printed on paper, even on the dark desk */
+  .sheet {
+    --fg: var(--ink);
+    --muted: #59534a;
+    --line: var(--ink);
+    --surface: var(--paper-hi);
+    --focus: var(--ink);
+    position: relative;
+    max-width: 60rem;
+    margin-inline: auto;
+    color: var(--ink);
+    background:
+      repeating-linear-gradient(transparent 0 calc(2rem - 1px), rgb(20 19 17 / 0.07) calc(2rem - 1px) 2rem),
+      var(--paper-hi);
+    border: 3px solid var(--ink);
+    border-radius: 6px 22px 22px 22px;
+    box-shadow: 10px 10px 0 0 var(--ink);
+  }
+  [data-theme='dark'] .sheet {
+    box-shadow:
+      10px 10px 0 0 var(--lime),
+      10px 10px 0 3px var(--ink);
+  }
+  @media (min-width: 64rem) {
+    .sheet {
+      rotate: -0.7deg;
+    }
+  }
+  .sheet__tab {
+    position: absolute;
+    bottom: 100%;
+    left: -3px;
+    display: flex;
+    gap: 1.25rem;
+    padding: 0.5rem 1rem 0.4rem;
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: 10px 10px 0 0;
+  }
+  .sheet__rev {
+    color: var(--lime);
+  }
+  .sheet__inner {
+    padding: 2rem 1.1rem 2.25rem;
+  }
+  @media (min-width: 48rem) {
+    .sheet__inner {
+      padding: 3rem 3rem 3rem;
+    }
+  }
+  .sheet .kicker .num {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .diff-hunk {
+    margin-top: 2rem;
+    padding: 0.45rem 0.7rem;
+    color: #3d3a34;
+    background: rgb(20 19 17 / 0.07);
+    border-radius: 6px;
+    text-transform: none;
+    letter-spacing: 0.01em;
+    overflow-wrap: anywhere;
+  }
+  .diff {
+    margin-top: 0.75rem;
+  }
+  .diff__row {
+    display: grid;
+    grid-template-columns: 2rem minmax(0, 1fr);
+    column-gap: 0.85rem;
+    row-gap: 0.25rem;
+    padding-block: 1.1rem;
+    border-bottom: 2px dashed rgb(20 19 17 / 0.22);
+  }
+  .diff__row > div {
+    grid-column: 2;
+  }
+  .diff__ver {
+    grid-column: 2;
+    grid-row: 1;
+    color: #59534a;
+  }
+  .diff__sign {
+    grid-row: 1 / span 2;
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    font-family: var(--font-mono);
+    font-weight: 800;
+    font-size: 1.15rem;
+    color: var(--ink);
+    background: var(--lime);
+    border: 2px solid var(--ink);
+    border-radius: 6px;
+  }
+  .diff__row--del .diff__sign {
+    background: var(--tomato);
+  }
+  .diff__row--del .diff__title {
+    grid-column: 2;
+    color: #59534a;
+  }
+  .diff__row--del del {
+    text-decoration-thickness: 3px;
+    text-decoration-color: var(--tomato);
+  }
+  .diff__title {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.35rem);
+    line-height: 1.02;
+    letter-spacing: -0.03em;
+    text-wrap: balance;
+  }
+  .diff__body {
+    margin-top: 0.5rem;
+    max-width: 52ch;
+    font-size: 1.0625rem;
+    line-height: 1.5;
+    color: #3d3a34;
+  }
+  @media (min-width: 48rem) {
+    .diff__row {
+      grid-template-columns: 2.25rem 4rem minmax(0, 1fr);
+      column-gap: 1.25rem;
+      padding-block: 1.4rem;
+    }
+    .diff__sign {
+      grid-row: 1;
+      width: 2.25rem;
+      height: 2.25rem;
+    }
+    .diff__ver {
+      grid-column: 2;
+      padding-top: 0.55rem;
+    }
+    .diff__row > div,
+    .diff__row--del .diff__title {
+      grid-column: 3;
+      grid-row: 1;
+    }
+  }
+
+  .sheet__sign {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.25rem;
+    margin-top: 2rem;
+  }
+  .sig {
+    width: 15rem;
+    height: auto;
+    color: var(--ink);
+    overflow: visible;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .js .sig path {
+      stroke-dasharray: 1;
+      stroke-dashoffset: 1;
+    }
+    .js .sig.is-drawn path {
+      stroke-dashoffset: 0;
+      transition: stroke-dashoffset 1.4s var(--ease-out);
+    }
+    .js .sig.is-drawn path + path {
+      transition-delay: 1.1s;
+      transition-duration: 0.5s;
+    }
+  }
+</style>
+
+<script>
+  const sig = document.querySelector<SVGSVGElement>('[data-sig]');
+  if (sig && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver(
+      ([e]) => {
+        if (e?.isIntersecting) {
+          sig.classList.add('is-drawn');
+          io.disconnect();
+        }
+      },
+      { threshold: 0.8 },
+    );
+    io.observe(sig);
+  } else sig?.classList.add('is-drawn');
+</script>

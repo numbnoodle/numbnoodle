@@ -459,8 +459,12 @@ export const toolbox = {
 
 export const manual = {
   kicker: 'How I work',
-  title: 'The founder operating manual',
+  title: 'The founder operating manual.',
   revision: 'rev. 2026.10',
+  file: 'operating-manual.md',
+  /** The old way, shown as a deleted line in the diff. */
+  removed: 'Write the spec. Hand it off. Wait three sprints.',
+  signature: 'signed, numbnoodle',
   principles: [
     {
       title: 'No handoffs. I design it, build it and ship it.',

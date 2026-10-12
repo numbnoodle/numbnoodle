@@ -17,7 +17,7 @@ await page.evaluate(async ([sel, frac]) => {
   for (let y = scrollY; y < target; y += 200) { scrollTo(0, y); await new Promise(r => setTimeout(r, 16)); }
   scrollTo(0, target);
 }, [sel, frac]);
-await page.waitForTimeout(900);
+await page.waitForTimeout(Number(process.env.WAIT ?? 900));
 await page.screenshot({ path: out });
 console.log(out, errors.join(' | '));
 await browser.close();

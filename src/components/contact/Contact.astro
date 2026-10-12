@@ -1,0 +1,241 @@
+---
+import site from '@/content/site';
+import CopyEmail from './CopyEmail.tsx';
+import Icon from '@/components/global/Icon.astro';
+
+const { contact, links } = site;
+const socials = [
+  { label: 'GitHub', href: links.github, handle: '@numbnoodle' },
+  { label: 'LinkedIn', href: links.linkedin, handle: 'gaurav' },
+  { label: 'X', href: links.x, handle: '@numbnoodlee' },
+];
+---
+
+<section id="contact" class="contact wrap" aria-labelledby="contact-title">
+  <div class="poster">
+    <p class="kicker"><span class="num">05</span>{contact.kicker}</p>
+    <h2 id="contact-title" class="poster__title">{contact.title}</h2>
+    <p class="poster__intro">{contact.intro}</p>
+
+    <CopyEmail client:visible email={links.email} copyLabel={contact.copyLabel} copiedLabel={contact.copiedLabel} />
+    <a class="label link poster__mailto" href={`mailto:${links.email}?subject=${encodeURIComponent('Let’s build something')}`}>
+      or open it in your mail app
+    </a>
+
+    <ul class="poster__links">
+      {
+        socials.map((s) => (
+          <li>
+            <a class="btn btn-ink poster__link" href={s.href} target="_blank" rel="me noopener">
+              {s.label}
+              <span class="poster__handle mono">{s.handle}</span>
+              <Icon name="arrow-up-right" class="size-5" />
+              <span class="visually-hidden">(opens in a new tab)</span>
+            </a>
+          </li>
+        ))
+      }
+      <li>
+        <a class="btn poster__link" href={links.resume} download>
+          Resume <span class="poster__handle mono">pdf</span>
+          <Icon name="download" class="size-5" />
+        </a>
+      </li>
+    </ul>
+
+    <svg class="poster__noodle" viewBox="0 0 300 460" aria-hidden="true">
+      <path
+        class="noodle"
+        stroke-width="5"
+        d="M292 8 C 230 14, 250 80, 205 92 C 165 102, 160 56, 185 52 C 214 48, 220 128, 170 170 C 128 205, 120 260, 150 280 C 180 300, 196 262, 170 254 C 140 246, 104 330, 84 372 C 70 400, 50 420, 18 432"
+      ></path>
+      <path class="noodle" stroke-width="5" d="M34 414 L16 433 L40 444"></path>
+    </svg>
+  </div>
+</section>
+
+<style is:global>
+  .contact {
+    padding-block: 3rem 5rem;
+  }
+  @media (min-width: 64rem) {
+    .contact {
+      padding-block: 4rem 7rem;
+    }
+  }
+  .poster {
+    --fg: var(--ink);
+    --muted: #2f3a0f;
+    --line: var(--ink);
+    --surface: var(--paper-hi);
+    --focus: var(--ink);
+    position: relative;
+    padding: 2.25rem 1.1rem 2.5rem;
+    color: var(--ink);
+    background: var(--lime);
+    border: 3px solid var(--ink);
+    border-radius: 26px;
+    box-shadow: 12px 12px 0 0 var(--ink);
+    overflow: hidden;
+  }
+  [data-theme='dark'] .poster {
+    box-shadow:
+      12px 12px 0 0 var(--tomato),
+      12px 12px 0 3px var(--ink);
+    border-color: var(--ink);
+  }
+  @media (min-width: 48rem) {
+    .poster {
+      padding: 3.5rem 3.5rem 3.75rem;
+    }
+  }
+  @media (min-width: 80rem) {
+    .poster {
+      padding: 4.5rem 5rem 5rem;
+    }
+  }
+  .poster .kicker .num {
+    background: var(--ink);
+    color: var(--lime);
+  }
+  .poster__title {
+    margin-top: 1rem;
+    max-width: 9ch;
+    font-size: var(--text-mega);
+    line-height: 0.84;
+    letter-spacing: -0.05em;
+  }
+  .poster__intro {
+    margin-top: 1.5rem;
+    max-width: 40ch;
+    font-size: var(--text-lead);
+    line-height: 1.4;
+    font-weight: 500;
+  }
+
+  .copy-email {
+    margin-top: 2.25rem;
+  }
+  .copy-email__btn {
+    position: relative;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    max-width: 100%;
+    padding: 0.9rem 1rem 1rem;
+    text-align: left;
+    color: var(--paper);
+    background: var(--ink);
+    border: 3px solid var(--ink);
+    border-radius: 20px;
+    box-shadow: 6px 6px 0 0 var(--paper-hi), 6px 6px 0 3px var(--ink);
+    cursor: copy;
+    transition:
+      transform 0.18s var(--ease-snap),
+      box-shadow 0.18s var(--ease-snap);
+  }
+  @media (min-width: 48rem) {
+    .copy-email__btn {
+      padding: 1.1rem 1.5rem 1.15rem;
+    }
+  }
+  .copy-email__btn:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 8px 8px 0 0 var(--paper-hi), 8px 8px 0 3px var(--ink);
+  }
+  .copy-email__btn:active {
+    transform: translate(5px, 5px);
+    box-shadow: 0 0 0 0 var(--paper-hi), 0 0 0 0 var(--ink);
+  }
+  .copy-email__btn:focus-visible {
+    outline: 3px solid var(--ink);
+    outline-offset: 5px;
+  }
+  .copy-email__text {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(1rem, 0.1rem + 4.85vw, 3.25rem);
+    line-height: 1;
+    letter-spacing: -0.035em;
+    overflow-wrap: anywhere;
+  }
+  .copy-email__hint {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--lime);
+  }
+  .copy-email__stamp {
+    position: absolute;
+    top: 50%;
+    right: 1rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.45rem 0.9rem;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 1.35rem;
+    color: var(--ink);
+    background: var(--lime);
+    border: 3px solid var(--ink);
+    border-radius: 12px;
+    box-shadow: 3px 3px 0 0 var(--ink);
+    opacity: 0;
+    transform: translateY(-50%) scale(1.6) rotate(-14deg);
+    pointer-events: none;
+    transition:
+      opacity 0.12s,
+      transform 0.45s var(--ease-spring);
+  }
+  .copy-email__btn.is-copied .copy-email__stamp {
+    opacity: 1;
+    transform: translateY(-50%) scale(1) rotate(-8deg);
+  }
+  .poster__mailto {
+    display: inline-block;
+    margin-top: 1.25rem;
+  }
+  .poster__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.85rem;
+    margin-top: 2.5rem;
+  }
+  .poster__link {
+    --btn-fg: var(--paper);
+  }
+  .poster .btn {
+    box-shadow: 4px 4px 0 0 var(--ink);
+    border-color: var(--ink);
+  }
+  .poster .btn:hover {
+    box-shadow: 6px 6px 0 0 var(--ink);
+  }
+  .poster .btn-ink {
+    --btn-bg: var(--ink);
+  }
+  .poster .btn:not(.btn-ink) {
+    --btn-bg: var(--paper-hi);
+    --btn-fg: var(--ink);
+  }
+  .poster__handle {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    opacity: 0.75;
+  }
+  .poster__noodle {
+    display: none;
+  }
+  @media (min-width: 64rem) {
+    .poster__noodle {
+      display: block;
+      position: absolute;
+      top: 3.5rem;
+      right: clamp(2rem, 6vw, 6rem);
+      width: clamp(14rem, 20vw, 19rem);
+      color: var(--ink);
+    }
+  }
+</style>

@@ -1,0 +1,107 @@
+---
+import site from '@/content/site';
+import NoodleMark from '@/components/global/NoodleMark.astro';
+const { footer, person } = site;
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="wrap site-footer__inner">
+    <div class="site-footer__row">
+      <a href="/" class="site-footer__brand" aria-label="numbnoodle: back to top">
+        <NoodleMark class="size-8" />
+      </a>
+      <p class="mono site-footer__changelog">
+        <span class="site-footer__tag">{footer.version}</span> · shipped by numbnoodle · built with {footer.builtWith}
+      </p>
+    </div>
+    <div class="site-footer__row site-footer__row--meta">
+      <p class="mono site-footer__clock" data-clock data-tz={person.timeZone}>
+        Based in {person.location} (IST, UTC+5:30).
+      </p>
+      <p class="mono site-footer__meta">
+        <span class="js-only">press <kbd>/</kbd> for the command menu · </span>© {year} {person.name}
+      </p>
+    </div>
+  </div>
+</footer>
+
+<style is:global>
+  .site-footer {
+    color: var(--paper);
+    background: var(--ink);
+    border-top: 3px solid var(--line);
+  }
+  [data-theme='dark'] .site-footer {
+    background: var(--sunken);
+  }
+  .site-footer__inner {
+    display: grid;
+    gap: 1.25rem;
+    padding-block: 2rem 2.25rem;
+  }
+  .site-footer__row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem 1.5rem;
+  }
+  .site-footer__brand {
+    border-radius: 10px;
+  }
+  .site-footer__changelog,
+  .site-footer__clock,
+  .site-footer__meta {
+    font-size: 0.8125rem;
+    line-height: 1.5;
+  }
+  .site-footer__changelog {
+    flex: 1 1 18rem;
+  }
+  @media (min-width: 48rem) {
+    .site-footer__changelog {
+      text-align: right;
+    }
+  }
+  .site-footer__tag {
+    padding: 0.1rem 0.45rem;
+    color: var(--ink);
+    background: var(--lime);
+    border-radius: 4px;
+    font-weight: 700;
+  }
+  .site-footer__row--meta {
+    padding-top: 1.1rem;
+    border-top: 1.5px dashed rgb(242 237 227 / 0.25);
+    color: #c9c2b4;
+  }
+  .site-footer kbd {
+    padding: 0.05rem 0.4rem;
+    font-family: var(--font-mono);
+    color: var(--paper);
+    border: 1.5px solid currentColor;
+    border-radius: 4px;
+  }
+  html:not(.js) .site-footer .js-only {
+    display: none;
+  }
+</style>
+
+<script>
+  const el = document.querySelector<HTMLElement>('[data-clock]');
+  if (el) {
+    const tz = el.dataset.tz || 'Asia/Kolkata';
+    const fmt = new Intl.DateTimeFormat('en-US', { timeZone: tz, hour: 'numeric', minute: '2-digit', hour12: true });
+    const hourFmt = new Intl.DateTimeFormat('en-US', { timeZone: tz, hour: 'numeric', hourCycle: 'h23' });
+    const tick = () => {
+      const now = new Date();
+      const time = fmt.format(now).toLowerCase();
+      const h = Number(hourFmt.format(now));
+      const mood = h >= 1 && h < 6 ? 'probably still shipping' : 'probably shipping';
+      el.textContent = `it’s ${time} in Hyderabad, ${mood}.`;
+    };
+    tick();
+    setInterval(tick, 20_000);
+  }
+</script>
