@@ -1,0 +1,382 @@
+---
+import site from '@/content/site';
+import HatSwitcher from './HatSwitcher.tsx';
+import NoodleArrow from '@/components/global/NoodleArrow.astro';
+import Icon from '@/components/global/Icon.astro';
+
+const { hero } = site;
+const [zero, one, big] = hero.headline.steps;
+---
+
+<section id="top" class="hero wrap relative pt-6 pb-16 sm:pt-10 lg:pb-24" data-hat="founder" aria-labelledby="hero-title">
+  <p class="status-chip">
+    <span class="status-dot" aria-hidden="true"></span>
+    <span><span class="font-bold">{hero.status.label}:</span> {hero.status.text}</span>
+  </p>
+
+  <div class="hero-grid mt-6 sm:mt-8">
+    <h1 id="hero-title" class="hero-title">
+      <span class="block">{hero.headline.lead.split(' ').slice(0, 3).join(' ')}</span>
+      <span class="block whitespace-nowrap">{hero.headline.lead.split(' ').slice(3).join(' ')} {zero}<NoodleArrow class="mx-[0.06em]" delay={0.35} /><span class="visually-hidden"> to </span>{one}</span>
+      <span class="block whitespace-nowrap"
+        ><NoodleArrow class="mr-[0.08em]" variant={2} delay={0.75} /><span class="visually-hidden"> to </span><span class="hat-mark">{big}</span><sup class="hat-star" aria-hidden="true">{hero.headline.footnoteMark}</sup></span
+      >
+    </h1>
+
+    <div class="hero-cta max-w-[40rem]">
+      <p id="hero-footnote" class="hero-footnote">
+        <span class="hat-star-inline" aria-hidden="true">*</span>{hero.footnote}
+      </p>
+      <div class="mt-7 flex flex-col gap-3.5 xs:flex-row xs:flex-wrap">
+        <a href={hero.ctas.primary.href} class="btn btn-lime">
+          {hero.ctas.primary.label}
+          <Icon name="arrow-down" class="size-5" />
+        </a>
+        <a href={hero.ctas.secondary.href} class="btn">
+          {hero.ctas.secondary.label}
+          <Icon name="arrow-right" class="size-5" />
+        </a>
+      </div>
+      <a href={hero.ctas.resume.href} download class="label link mt-6 inline-flex items-center gap-2">
+        <Icon name="download" class="size-4" />
+        {hero.ctas.resume.label} <span class="text-muted normal-case">(pdf)</span>
+      </a>
+    </div>
+
+    <div class="hero-side relative">
+      <span class="sticker hero-sticker-b" aria-hidden="true">4 hats · 1 human</span>
+      <HatSwitcher client:load hats={hero.hats} prompt={hero.hatsPrompt} />
+    </div>
+  </div>
+
+  <span class="sticker hero-sticker-a" aria-hidden="true">{site.person.locationShort}</span>
+
+  <a href="#pipeline" class="follow-noodle label" aria-label="Follow the noodle to the pipeline">
+    <svg viewBox="0 0 40 120" class="h-20 w-7" aria-hidden="true">
+      <path class="noodle" pathLength="1" stroke-width="3.5" d="M20 2 C 20 20, 6 24, 8 38 C 10 52, 32 46, 30 62 C 28 78, 10 74, 12 90 C 13 100, 20 104, 20 116"></path>
+      <path class="noodle" stroke-width="3.5" d="M12 108 L20 117 L28 108"></path>
+    </svg>
+    <span>follow the noodle</span>
+  </a>
+</section>
+
+<style is:global>
+  .hero {
+    --hat-bg: var(--lime);
+    --hat-fg: var(--ink);
+    --hat-rot: -2.5deg;
+  }
+  .hero[data-hat='designer'] {
+    --hat-bg: var(--tomato);
+    --hat-fg: var(--ink);
+    --hat-rot: 2deg;
+  }
+  .hero[data-hat='engineer'] {
+    --hat-bg: var(--ink-lo);
+    --hat-fg: var(--lime);
+    --hat-rot: -1deg;
+  }
+  .hero[data-hat='growth'] {
+    --hat-bg: var(--ink-lo);
+    --hat-fg: var(--tomato);
+    --hat-rot: 3deg;
+  }
+
+  .status-chip {
+    display: inline-flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    max-width: 100%;
+    padding: 0.5rem 0.9rem 0.5rem 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    line-height: 1.35;
+    background: var(--surface);
+    border: 2px solid var(--line);
+    border-radius: 999px;
+  }
+  @media (max-width: 30rem) {
+    .status-chip {
+      border-radius: 14px;
+    }
+  }
+  .status-dot {
+    flex: none;
+    width: 0.7rem;
+    height: 0.7rem;
+    margin-top: 0.22rem;
+    border-radius: 50%;
+    background: var(--lime);
+    border: 2px solid var(--ink);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .status-dot {
+      animation: nn-blink 1.6s steps(1) infinite;
+    }
+  }
+
+  .hero-title {
+    font-size: var(--text-mega);
+    line-height: var(--text-mega--line-height);
+    letter-spacing: var(--text-mega--letter-spacing);
+    font-weight: 800;
+    text-wrap: initial;
+  }
+
+  .hat-mark {
+    display: inline-block;
+    padding: 0.02em 0.09em 0.06em;
+    margin-top: 0.06em;
+    color: var(--hat-fg);
+    background: var(--hat-bg);
+    border: max(3px, 0.025em) solid var(--line);
+    border-radius: 0.14em;
+    box-shadow: 0.05em 0.05em 0 0 var(--line);
+    rotate: var(--hat-rot);
+    transition:
+      background-color 0.25s,
+      color 0.25s,
+      rotate 0.6s var(--ease-spring);
+  }
+  .hat-star {
+    font-size: 0.45em;
+    vertical-align: super;
+    margin-left: 0.04em;
+  }
+  .hat-star-inline {
+    font-family: var(--font-display);
+    font-weight: 800;
+    margin-right: 0.15em;
+  }
+
+  .hero-footnote {
+    font-size: var(--text-lead);
+    line-height: 1.45;
+    max-width: 38ch;
+  }
+
+  /* hat card */
+  .hat-card {
+    background: var(--surface);
+    border: var(--bw) solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: 7px 7px 0 0 var(--line);
+    overflow: hidden;
+  }
+  @media (min-width: 64rem) {
+    .hat-card {
+      rotate: 1.25deg;
+      margin-top: 0.5rem;
+    }
+  }
+  .hat-card__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.7rem 1rem;
+    background: var(--hat-bg);
+    color: var(--hat-fg);
+    border-bottom: var(--bw) solid var(--line);
+    transition:
+      background-color 0.25s,
+      color 0.25s;
+  }
+  .hat-card__count {
+    opacity: 0.8;
+    white-space: nowrap;
+  }
+  .hat-tabs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+    padding: 1rem 1rem 0;
+  }
+  @media (min-width: 26rem) {
+    .hat-tabs {
+      grid-template-columns: repeat(4, auto);
+      justify-content: start;
+    }
+  }
+  .hat-tab {
+    min-height: 2.75rem;
+    padding: 0.4rem 0.95rem;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--fg);
+    background: transparent;
+    border: 2px solid var(--line);
+    border-radius: 999px;
+    cursor: pointer;
+    transition:
+      transform 0.18s var(--ease-snap),
+      box-shadow 0.18s var(--ease-snap),
+      background-color 0.15s;
+  }
+  .hat-tab:hover {
+    background: var(--sunken);
+  }
+  .hat-tab[aria-selected='true'] {
+    background: var(--fg);
+    color: var(--bg);
+    box-shadow: 3px 3px 0 0 var(--hat-bg), 3px 3px 0 2px var(--line);
+    transform: translate(-1px, -1px);
+  }
+  .hat-panel {
+    padding: 1.1rem 1rem 1.25rem;
+    border-radius: 0 0 var(--radius) var(--radius);
+  }
+  .hat-panel:focus-visible {
+    outline-offset: -6px;
+  }
+  .hat-panel__stack {
+    display: grid;
+  }
+  .hat-panel__inner {
+    grid-area: 1 / 1;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 1rem;
+    align-items: start;
+    visibility: hidden;
+  }
+  .hat-panel__inner.is-on {
+    visibility: visible;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .hat-panel__inner.is-on {
+      animation: nn-pop 0.45s var(--ease-spring) both;
+      transform-origin: 10% 50%;
+    }
+  }
+  .hat-panel__icon {
+    display: grid;
+    place-items: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    color: var(--hat-fg);
+    background: var(--hat-bg);
+    border: var(--bw) solid var(--line);
+    border-radius: 50%;
+    rotate: var(--hat-rot);
+    transition:
+      background-color 0.25s,
+      color 0.25s,
+      rotate 0.6s var(--ease-spring);
+  }
+  .hat-panel__line {
+    font-size: 1.1875rem;
+    line-height: 1.4;
+    font-weight: 500;
+  }
+  .hat-panel__proof {
+    margin-top: 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    line-height: 1.5;
+    color: var(--muted);
+  }
+  .hat-panel__proof-tag {
+    display: inline-block;
+    padding: 0.05rem 0.4rem;
+    margin-right: 0.25rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--fg);
+    border: 1.5px solid var(--line);
+    border-radius: 4px;
+  }
+
+  .hero-grid {
+    display: grid;
+    gap: 2.25rem;
+  }
+  .hero-side {
+    margin-top: 1.25rem;
+  }
+  @media (min-width: 80rem) {
+    .hero-grid {
+      grid-template-columns: minmax(0, 1fr) 29rem;
+      column-gap: 3rem;
+      row-gap: 2.75rem;
+    }
+    .hero-title {
+      grid-column: 1;
+      grid-row: 1;
+      white-space: nowrap;
+    }
+    .hero-cta {
+      grid-column: 1;
+      grid-row: 2;
+    }
+    .hero-side {
+      grid-column: 2;
+      grid-row: 1 / span 2;
+      margin-top: calc(var(--text-mega) * 0.86 + 2.5rem);
+    }
+  }
+  @media (min-width: 90rem) {
+    .hero-grid {
+      grid-template-columns: minmax(0, 1fr) 31rem;
+    }
+  }
+
+  .hero-sticker-b {
+    position: absolute;
+    z-index: 2;
+    top: -1.1rem;
+    right: 0.75rem;
+    font-size: 0.9375rem;
+    background: var(--tomato);
+    --r: 4deg;
+  }
+  .hero-sticker-a {
+    display: none;
+  }
+  @media (min-width: 64rem) {
+    .hero-sticker-a {
+      display: inline-flex;
+      position: absolute;
+      top: 1.25rem;
+      right: 2.5rem;
+      font-size: 1.125rem;
+      background: var(--paper-hi);
+      --r: 5deg;
+    }
+    .hero-sticker-b {
+      top: -1.4rem;
+      right: -0.75rem;
+      font-size: 1.0625rem;
+      --r: 6deg;
+    }
+  }
+
+  .follow-noodle {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    width: max-content;
+    margin: 3.5rem auto 0;
+    text-decoration: none;
+    color: var(--muted);
+  }
+  .follow-noodle:hover {
+    color: var(--fg);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .js .follow-noodle path:first-child {
+      stroke-dasharray: 0.12 0.06;
+      animation: nn-march 3s linear infinite;
+    }
+  }
+  @keyframes nn-march {
+    to {
+      stroke-dashoffset: -0.36;
+    }
+  }
+</style>
