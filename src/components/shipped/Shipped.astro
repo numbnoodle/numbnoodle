@@ -101,6 +101,7 @@ const { shipped, projects } = site;
   }
   .box__body {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: 2rem;
     padding: 1.4rem 1.1rem 1.6rem;
   }
@@ -279,7 +280,11 @@ const { shipped, projects } = site;
       gap: 0.5rem;
     }
     .phone {
-      width: 11.5rem;
+      width: min(11.5rem, 50vw);
+    }
+    .stamp {
+      width: min(7.5rem, 30vw);
+      height: auto;
     }
   }
 

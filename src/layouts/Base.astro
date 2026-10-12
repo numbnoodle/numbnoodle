@@ -73,8 +73,8 @@ const bootScript = `(()=>{try{var d=document.documentElement;d.classList.add('js
     <meta name="theme-color" content={site.seo.themeColorLight} media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content={site.seo.themeColorDark} media="(prefers-color-scheme: dark)" />
 
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
     <link rel="sitemap" href="/sitemap-index.xml" />
@@ -110,12 +110,9 @@ const bootScript = `(()=>{try{var d=document.documentElement;d.classList.add('js
     </main>
     <slot name="footer" />
     <CommandPalette client:idle email={site.links.email} links={site.links} />
-    <script>
-      import site from '@/content/site';
-      const [first, ...rest] = site.consoleMessage;
-      const art = '  ╭─╮ ╭─╮ ╭─╮\n──╯ ╰─╯ ╰─╯ ╰──●  numbnoodle';
+    <script is:inline define:vars={{ lines: site.consoleMessage }}>
       console.log(
-        `%c${art}%c\n\n${first}\n${rest.join('\n')}`,
+        '%c  ╭─╮ ╭─╮ ╭─╮\n──╯ ╰─╯ ╰─╯ ╰──●  numbnoodle%c\n\n' + lines.join('\n'),
         'color:#c9f73a;background:#141311;font-family:monospace;font-weight:700;padding:4px 0',
         'font-family:monospace;font-size:12px;line-height:1.6',
       );

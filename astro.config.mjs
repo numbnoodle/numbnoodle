@@ -4,6 +4,7 @@ import react from '@astrojs/react';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 
+/** @param {string} pkg @param {string} file */
 const fontFile = (pkg, file) => `./node_modules/${pkg}/files/${file}`;
 
 export default defineConfig({
