@@ -244,7 +244,7 @@ export const projects: Project[] = [
     screenshot: {
       // src: '/work/coins-me-home.webp',
       alt: 'Coins.me app on a phone',
-      todo: 'Coins.me app screenshot, portrait (e.g. 1080×2340) → /public/work/coins-me-home.webp',
+      todo: 'Coins.me app screenshot, portrait (e.g. 1080×2340), saved as /public/work/coins-me-home.webp',
     },
     metrics: [
       { value: 5, prefix: '~', suffix: 'K', label: 'monthly active users' },
@@ -326,7 +326,7 @@ export const projects: Project[] = [
     screenshot: {
       // src: '/work/p2p-me-home.webp',
       alt: 'P2P.me app on a phone',
-      todo: 'P2P.me app screenshot, portrait (e.g. 1080×2340) → /public/work/p2p-me-home.webp',
+      todo: 'P2P.me app screenshot, portrait (e.g. 1080×2340), saved as /public/work/p2p-me-home.webp',
     },
     metrics: [
       { value: 250, suffix: 'K', label: 'users' },
