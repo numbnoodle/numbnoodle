@@ -52,6 +52,10 @@ export interface Project {
   /** Shown when the pitch still needs Gaurav's words. */
   pitchTodo?: string;
   accent: 'lime' | 'tomato';
+  /** Who assembled it. Printed on the box. */
+  assembledBy: string;
+  /** App screenshot for the launch card. Drop a file in /public/work and set `src`. */
+  screenshot: { src?: string; alt: string; todo: string };
   metrics: Metric[];
   metricsLabel: string;
   metricsNote?: string;
@@ -236,6 +240,12 @@ export const projects: Project[] = [
     pitch:
       'A progressive web app that helps people in markets with currency instability save and spend in dollars.',
     accent: 'lime',
+    assembledBy: 'Assembled by 1 human in Hyderabad',
+    screenshot: {
+      // src: '/work/coins-me-home.webp',
+      alt: 'Coins.me app on a phone',
+      todo: 'Coins.me app screenshot, portrait (e.g. 1080×2340) → /public/work/coins-me-home.webp',
+    },
     metrics: [
       { value: 5, prefix: '~', suffix: 'K', label: 'monthly active users' },
       { value: 500, prefix: '~', label: 'daily active users' },
@@ -312,6 +322,12 @@ export const projects: Project[] = [
       'Taken from an early-stage idea to a live platform by a founding team of three: me and two co-founders.',
     pitchTodo: 'Add a one-line description of what P2P.me does.',
     accent: 'tomato',
+    assembledBy: 'Assembled by a founding team of 3',
+    screenshot: {
+      // src: '/work/p2p-me-home.webp',
+      alt: 'P2P.me app on a phone',
+      todo: 'P2P.me app screenshot, portrait (e.g. 1080×2340) → /public/work/p2p-me-home.webp',
+    },
     metrics: [
       { value: 250, suffix: 'K', label: 'users' },
       { value: 30, suffix: 'K+', label: 'monthly active users' },
@@ -378,6 +394,13 @@ export const projects: Project[] = [
     ],
   },
 ];
+
+export const shipped = {
+  kicker: 'Shipped',
+  title: 'The case files.',
+  intro: 'Two live products. One I’m building solo, one I helped build on a founding team of three. Go poke them.',
+  earlierTitle: 'Earlier',
+};
 
 export const earlier: EarlierRole[] = [
   {
@@ -500,6 +523,7 @@ export const site = {
   nav,
   hero,
   pipeline,
+  shipped,
   projects,
   earlier,
   education,

@@ -1,0 +1,16 @@
+---
+/** A loud sticky note for content Gaurav still needs to add. Hidden when flags.showTodoNotes is false. */
+import { flags } from '@/content/site';
+interface Props {
+  class?: string;
+}
+const { class: cls } = Astro.props;
+---
+
+{
+  flags.showTodoNotes && (
+    <p class:list={['todo-note', cls]}>
+      <strong>TODO(gaurav):</strong> <slot />
+    </p>
+  )
+}

@@ -1,0 +1,113 @@
+---
+import site from '@/content/site';
+const { earlier, education, shipped } = site;
+---
+
+<div class="earlier">
+  <div class="earlier__head">
+    <h3 class="earlier__title">{shipped.earlierTitle}</h3>
+    <p class="label text-muted">before the founding-team era</p>
+  </div>
+  <ol class="earlier__list">
+    {
+      earlier.map((e) => (
+        <li class="earlier__item">
+          <p class="label earlier__when">{e.period}</p>
+          <div>
+            <h4 class="earlier__co">
+              {e.company} <span class="earlier__role">· {e.role}</span>
+            </h4>
+            <p class="earlier__place label">{e.place}</p>
+            <p class="earlier__sum">{e.summary}</p>
+          </div>
+        </li>
+      ))
+    }
+    <li class="earlier__item">
+      <p class="label earlier__when">{education.period}</p>
+      <div>
+        <h4 class="earlier__co">
+          Education <span class="earlier__role">· {education.degree}</span>
+        </h4>
+        <p class="earlier__place label">{education.school}</p>
+      </div>
+    </li>
+  </ol>
+</div>
+
+<style is:global>
+  .earlier {
+    margin-top: 4.5rem;
+  }
+  @media (min-width: 64rem) {
+    .earlier {
+      margin-top: 6rem;
+    }
+  }
+  .earlier__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.5rem 1rem;
+    padding-bottom: 0.9rem;
+    border-bottom: 3px solid var(--line);
+  }
+  .earlier__title {
+    font-size: var(--text-title);
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+  .earlier__list {
+    display: grid;
+  }
+  @media (min-width: 64rem) {
+    .earlier__list {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  .earlier__item {
+    display: grid;
+    grid-template-columns: 7.5rem minmax(0, 1fr);
+    gap: 1rem;
+    padding-block: 1.25rem;
+    border-bottom: 2px dashed color-mix(in oklab, var(--line) 40%, transparent);
+  }
+  @media (min-width: 64rem) {
+    .earlier__item {
+      grid-template-columns: 1fr;
+      gap: 0.6rem;
+      padding: 1.5rem 1.5rem 1.5rem 0;
+      border-bottom: none;
+    }
+    .earlier__item + .earlier__item {
+      padding-left: 1.5rem;
+      border-left: 2px dashed color-mix(in oklab, var(--line) 40%, transparent);
+    }
+  }
+  .earlier__when {
+    color: var(--muted);
+    padding-top: 0.25rem;
+  }
+  .earlier__co {
+    font-size: 1.375rem;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+  }
+  .earlier__role {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 1rem;
+    letter-spacing: 0;
+  }
+  .earlier__place {
+    margin-top: 0.3rem;
+    color: var(--muted);
+    text-transform: none;
+    letter-spacing: 0.01em;
+  }
+  .earlier__sum {
+    margin-top: 0.5rem;
+    font-size: 0.975rem;
+    line-height: 1.5;
+  }
+</style>

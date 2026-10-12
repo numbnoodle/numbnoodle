@@ -1,0 +1,94 @@
+---
+/**
+ * Odometer-style counter. Each digit is a strip that rolls into place when
+ * it scrolls into view. Widths never change, so there's zero layout shift.
+ * Without JS (or with reduced motion) it simply shows the final number.
+ */
+import type { Metric } from '@/content/site';
+
+interface Props {
+  metric: Metric;
+}
+const { metric } = Astro.props;
+const digits = String(metric.value).split('').map(Number);
+const full = `${metric.prefix ?? ''}${metric.value}${metric.suffix ?? ''}`;
+const strip = [...Array(20).keys()].map((n) => n % 10);
+---
+
+<span class="ticker" data-ticker>
+  <span class="ticker__num" aria-hidden="true">
+    {metric.prefix && <span class="ticker__affix">{metric.prefix}</span>}
+    {
+      digits.map((d, i) => (
+        <span class="odo">
+          <span class="odo__strip" style={`--d:${10 + d};--i:${i}`}>
+            {strip.map((n) => (
+              <span>{n}</span>
+            ))}
+          </span>
+        </span>
+      ))
+    }
+    {metric.suffix && <span class="ticker__affix">{metric.suffix}</span>}
+  </span>
+  <span class="visually-hidden">{full}</span>
+</span>
+
+<style is:global>
+  .ticker__num {
+    display: inline-flex;
+    align-items: baseline;
+    font-variant-numeric: tabular-nums;
+  }
+  .odo {
+    display: inline-block;
+    height: 1em;
+    overflow: hidden;
+    line-height: 1;
+  }
+  .odo__strip {
+    display: flex;
+    flex-direction: column;
+    transform: translateY(calc(var(--d) * -1em));
+  }
+  .odo__strip > span {
+    display: block;
+    height: 1em;
+    line-height: 1;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .odo__strip {
+      transition: transform 1.3s cubic-bezier(0.2, 0.85, 0.25, 1.03) calc(var(--i) * 90ms + 80ms);
+    }
+    .ticker.is-zero .odo__strip {
+      transform: translateY(0);
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const tickers = [...document.querySelectorAll<HTMLElement>('[data-ticker]')];
+  if (!reduce && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (!e.isIntersecting) return;
+          const el = e.target as HTMLElement;
+          // force a frame at zero, then roll
+          requestAnimationFrame(() => requestAnimationFrame(() => el.classList.remove('is-zero')));
+          io.unobserve(el);
+        });
+      },
+      { threshold: 0.6 },
+    );
+    tickers.forEach((t) => {
+      const r = t.getBoundingClientRect();
+      if (r.top > innerHeight) {
+        t.classList.add('is-zero');
+        io.observe(t);
+      }
+    });
+  }
+</script>

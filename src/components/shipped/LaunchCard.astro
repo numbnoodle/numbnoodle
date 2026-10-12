@@ -1,0 +1,118 @@
+---
+import type { Project } from '@/content/site';
+import { flags } from '@/content/site';
+import Icon from '@/components/global/Icon.astro';
+import TodoNote from '@/components/global/TodoNote.astro';
+import Ticker from './Ticker.astro';
+
+interface Props {
+  project: Project;
+  index: number;
+}
+const { project: p, index } = Astro.props;
+const num = String(index + 1).padStart(2, '0');
+
+// deterministic "barcode" from the product name
+const bars = [...`${p.name}${p.urlLabel}`].flatMap((ch, i) => {
+  const c = ch.charCodeAt(0);
+  return [1 + (c % 3), 1 + ((c >> 2) % 2) + (i % 2)];
+});
+let x = 0;
+const rects = bars.map((w, i) => {
+  const r = { x, w, on: i % 2 === 0 };
+  x += w;
+  return r;
+});
+const stampText = 'LIVE IN PRODUCTION · SHIPPED · ';
+---
+
+<article class:list={['box', `box--${p.accent}`]} aria-labelledby={`box-${p.slug}`}>
+  <div class="box__strip">
+    <span class="label">case file {num}</span>
+    <span class="label box__live"><span class="box__live-dot" aria-hidden="true"></span>live</span>
+    <span class="label box__url">{p.urlLabel}</span>
+  </div>
+
+  <div class="box__body">
+    <div class="box__main">
+      <p class="label box__role">{p.role}{p.period && <span class="box__period"> · {p.period}</span>}</p>
+      <h3 id={`box-${p.slug}`} class="box__name">{p.name}</h3>
+      <p class="box__pitch">{p.pitch}</p>
+      {p.pitchTodo && <TodoNote class="mt-3 max-w-[34rem]">{p.pitchTodo}</TodoNote>}
+
+      <div class="box__metrics">
+        <p class="label box__metrics-label">
+          {p.metricsLabel}
+          {p.metricsNote && <span class="box__metrics-note">{p.metricsNote}</span>}
+        </p>
+        <dl class="box__grid" style={`--n:${p.metrics.length}`}>
+          {
+            p.metrics.map((m) => (
+              <div class="box__metric">
+                <dt class="box__metric-label">{m.label}</dt>
+                <dd class="box__metric-value">
+                  <Ticker metric={m} />
+                </dd>
+              </div>
+            ))
+          }
+        </dl>
+      </div>
+
+      <div class="box__actions">
+        <a href={p.url} class:list={['btn', p.accent === 'lime' ? 'btn-lime' : 'btn-tomato']} target="_blank" rel="noopener">
+          Try it live <Icon name="arrow-up-right" class="size-5" /><span class="visually-hidden">(opens {p.urlLabel} in a new tab)</span>
+        </a>
+        <a href={`/work/${p.slug}`} class="btn">
+          Read the case file <Icon name="arrow-right" class="size-5" />
+        </a>
+      </div>
+
+      <div class="box__hats">
+        <p class="label">hats worn</p>
+        <ul class="box__hat-list">
+          {p.hats.map((h) => <li class="pill">{h}</li>)}
+        </ul>
+      </div>
+    </div>
+
+    <div class="box__side">
+      <div class="phone">
+        <div class="phone__screen">
+          {
+            p.screenshot.src ? (
+              <img src={p.screenshot.src} alt={p.screenshot.alt} loading="lazy" decoding="async" width="1080" height="2340" />
+            ) : (
+              <div class="phone__placeholder">
+                <span class="phone__logo" aria-hidden="true">{p.name}</span>
+                {flags.showTodoNotes ? (
+                  <p class="phone__todo">
+                    <strong>TODO(gaurav):</strong> {p.screenshot.todo}
+                  </p>
+                ) : (
+                  <p class="phone__todo">{p.urlLabel}</p>
+                )}
+              </div>
+            )
+          }
+        </div>
+      </div>
+      <svg class="stamp" viewBox="0 0 120 120" aria-hidden="true">
+        <defs>
+          <path id={`stamp-${p.slug}`} d="M60 60 m-44 0 a44 44 0 1 1 88 0 a44 44 0 1 1 -88 0"></path>
+        </defs>
+        <circle cx="60" cy="60" r="57" class="stamp__ring"></circle>
+        <circle cx="60" cy="60" r="31" class="stamp__ring"></circle>
+        <text class="stamp__text"><textPath href={`#stamp-${p.slug}`} textLength="270">{stampText}</textPath></text>
+        <path class="stamp__check" d="M46 61 l10 10 l20 -22"></path>
+      </svg>
+    </div>
+  </div>
+
+  <div class="box__foot">
+    <p class="label box__assembled">{p.assembledBy}</p>
+    <svg class="barcode" viewBox={`0 0 ${x} 30`} preserveAspectRatio="none" aria-hidden="true">
+      {rects.filter((r) => r.on).map((r) => <rect x={r.x} y="0" width={r.w} height="30" />)}
+    </svg>
+  </div>
+</article>
