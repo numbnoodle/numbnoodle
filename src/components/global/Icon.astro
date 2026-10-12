@@ -1,0 +1,36 @@
+---
+import { icons, type IconName } from '@/lib/icons';
+
+interface Props {
+  name: IconName;
+  class?: string;
+  /** stroke width in icon units */
+  stroke?: number;
+  label?: string;
+}
+const { name, class: cls = 'size-5', stroke = 2.5, label } = Astro.props;
+---
+
+<svg
+  viewBox="0 0 24 24"
+  class:list={['shrink-0', cls]}
+  fill="none"
+  stroke="currentColor"
+  stroke-width={stroke}
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden={label ? undefined : 'true'}
+  role={label ? 'img' : undefined}
+  aria-label={label}
+  focusable="false"
+>
+  <path d={icons[name]} />
+  {name === 'designer' && (
+    <g fill="currentColor" stroke="none">
+      <rect x="2" y="16" width="4" height="4" rx="0.5" />
+      <rect x="18" y="4" width="4" height="4" rx="0.5" />
+      <circle cx="9.5" cy="6" r="1.8" />
+      <circle cx="14.5" cy="19" r="1.8" />
+    </g>
+  )}
+</svg>

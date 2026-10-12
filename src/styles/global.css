@@ -1,0 +1,507 @@
+@import 'tailwindcss';
+
+/* ------------------------------------------------------------------
+   numbnoodle design tokens
+   Paper + ink, two loud accents. Accents are for hits, not wallpaper.
+   ------------------------------------------------------------------ */
+
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+@custom-variant motion-ok (@media (prefers-reduced-motion: no-preference));
+@custom-variant fine (@media (hover: hover) and (pointer: fine));
+
+:root {
+  /* fixed brand colors, same in both themes */
+  --paper: #f2ede3;
+  --paper-hi: #fbf8f1;
+  --paper-lo: #e6dfd1;
+  --ink: #141311;
+  --ink-hi: #23211d;
+  --ink-lo: #0c0b0a;
+  --lime: #c9f73a;
+  --tomato: #ff5a36;
+  --sticker-edge: #fffdf8;
+
+  /* semantic: light */
+  --bg: var(--paper);
+  --surface: var(--paper-hi);
+  --sunken: var(--paper-lo);
+  --fg: var(--ink);
+  --muted: #59534a;
+  --line: var(--ink);
+  --shadow: var(--ink);
+  --grid: rgb(20 19 17 / 0.055);
+  --grain-opacity: 0.07;
+  --focus: var(--ink);
+  --lid: #1b1a17;
+  --lid-edge: #3a3731;
+
+  /* geometry */
+  --bw: 2.5px;
+  --radius: 14px;
+  --radius-sm: 8px;
+  --sh-x: 5px;
+  --sh-y: 5px;
+
+  /* motion: snappy + springy, never floaty */
+  --ease-spring: linear(
+    0, 0.009, 0.035 2.1%, 0.141, 0.281 6.7%, 0.723 12.9%, 0.938 16.7%, 1.017, 1.077, 1.121,
+    1.149 24.3%, 1.159, 1.163, 1.161, 1.154 29.9%, 1.129 32.8%, 1.051 39.6%, 1.017 43.1%,
+    0.991, 0.977 51%, 0.974 53.8%, 0.975 57.1%, 0.997 69.8%, 1.003 76.9%, 1
+  );
+  --ease-snap: cubic-bezier(0.2, 0.9, 0.25, 1.15);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+  color-scheme: light;
+}
+
+/* dark: ink desk, paper type, same accents. Not an inversion: shadows
+   become a warm extrusion and stickers keep their colors. */
+[data-theme='dark'] {
+  --bg: #141311;
+  --surface: #1d1b18;
+  --sunken: #0d0c0b;
+  --fg: #f2ede3;
+  --muted: #b0a898;
+  --line: #f2ede3;
+  --shadow: #000000;
+  --grid: rgb(242 237 227 / 0.05);
+  --grain-opacity: 0.05;
+  --focus: var(--lime);
+  --lid: #2a2824;
+  --lid-edge: #4a463e;
+
+  color-scheme: dark;
+}
+
+@theme inline {
+  --font-display: var(--nn-display);
+  --font-sans: var(--nn-body);
+  --font-mono: var(--nn-mono);
+
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-sunken: var(--sunken);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-shadow: var(--shadow);
+  --color-paper: var(--paper);
+  --color-paper-hi: var(--paper-hi);
+  --color-ink: var(--ink);
+  --color-ink-hi: var(--ink-hi);
+  --color-lime: var(--lime);
+  --color-tomato: var(--tomato);
+}
+
+@theme {
+  /* type scale: huge headlines, tight leading */
+  --text-mega: clamp(3.25rem, 0.9rem + 10.4vw, 11.75rem);
+  --text-mega--line-height: 0.86;
+  --text-mega--letter-spacing: -0.045em;
+  --text-display: clamp(2.5rem, 1.3rem + 5.2vw, 6.75rem);
+  --text-display--line-height: 0.9;
+  --text-display--letter-spacing: -0.04em;
+  --text-title: clamp(1.75rem, 1.2rem + 2.2vw, 3.25rem);
+  --text-title--line-height: 0.95;
+  --text-title--letter-spacing: -0.03em;
+  --text-h3: clamp(1.375rem, 1.15rem + 0.9vw, 1.875rem);
+  --text-h3--line-height: 1.05;
+  --text-h3--letter-spacing: -0.02em;
+  --text-lead: clamp(1.125rem, 1rem + 0.55vw, 1.4375rem);
+  --text-lead--line-height: 1.4;
+  --text-label: 0.75rem;
+  --text-label--line-height: 1.2;
+  --text-label--letter-spacing: 0.08em;
+
+  --breakpoint-xs: 26rem;
+}
+
+/* ------------------------------------------------------------------
+   base
+   ------------------------------------------------------------------ */
+
+@layer base {
+  html {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-sans);
+    font-size: 100%;
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    scroll-padding-top: 1.5rem;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
+  body {
+    min-height: 100dvh;
+    overflow-x: clip;
+    font-size: 1.0625rem;
+    line-height: 1.55;
+    background-color: var(--bg);
+    /* notebook / canvas grid */
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 28px 28px;
+    background-position: -1px -1px;
+  }
+
+  /* paper grain. Pre-baked noise tile, rasterized once. */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 90;
+    pointer-events: none;
+    opacity: var(--grain-opacity);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1.4 -0.35'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  [data-theme='dark'] body::after {
+    filter: invert(1);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 800;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background: var(--lime);
+    color: var(--ink);
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+
+  a {
+    color: inherit;
+  }
+
+  img,
+  svg {
+    display: block;
+  }
+
+  [hidden] {
+    display: none !important;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* ------------------------------------------------------------------
+   components: the little kit everything is built from
+   ------------------------------------------------------------------ */
+
+@layer components {
+  .wrap {
+    width: 100%;
+    max-width: 84rem;
+    margin-inline: auto;
+    padding-inline: 1rem;
+  }
+  @media (min-width: 40rem) {
+    .wrap {
+      padding-inline: 1.75rem;
+    }
+  }
+  @media (min-width: 80rem) {
+    .wrap {
+      padding-inline: 2.5rem;
+    }
+  }
+
+  /* mono system text */
+  .label {
+    font-family: var(--font-mono);
+    font-size: var(--text-label);
+    line-height: 1.25;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+
+  .mono {
+    font-family: var(--font-mono);
+    letter-spacing: -0.01em;
+  }
+
+  /* hard-shadow slab */
+  .slab {
+    background: var(--surface);
+    border: var(--bw) solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--sh-x) var(--sh-y) 0 0 var(--shadow);
+  }
+
+  [data-theme='dark'] .slab {
+    box-shadow: var(--sh-x) var(--sh-y) 0 0 var(--shadow), var(--sh-x) var(--sh-y) 0 var(--bw) var(--line);
+  }
+
+  /* buttons: press them, they press back */
+  .btn {
+    --btn-bg: var(--surface);
+    --btn-fg: var(--fg);
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    min-height: 3.25rem;
+    padding: 0.8rem 1.4rem;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.0625rem;
+    line-height: 1;
+    letter-spacing: -0.01em;
+    color: var(--btn-fg);
+    background: var(--btn-bg);
+    border: var(--bw) solid var(--line);
+    border-radius: 999px;
+    box-shadow: 4px 4px 0 0 var(--line);
+    text-decoration: none;
+    cursor: pointer;
+    user-select: none;
+    transition:
+      transform 0.18s var(--ease-snap),
+      box-shadow 0.18s var(--ease-snap),
+      background-color 0.15s;
+  }
+  .btn:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 0 var(--line);
+  }
+  .btn:active {
+    transform: translate(4px, 4px);
+    box-shadow: 0 0 0 0 var(--line);
+    transition-duration: 0.05s;
+  }
+  .btn-lime {
+    --btn-bg: var(--lime);
+    --btn-fg: var(--ink);
+  }
+  .btn-tomato {
+    --btn-bg: var(--tomato);
+    --btn-fg: var(--ink);
+  }
+  .btn-ink {
+    --btn-bg: var(--fg);
+    --btn-fg: var(--bg);
+  }
+  .btn-sm {
+    min-height: 2.5rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.9375rem;
+    box-shadow: 3px 3px 0 0 var(--line);
+  }
+  .btn-sm:hover {
+    box-shadow: 5px 5px 0 0 var(--line);
+  }
+
+  /* text link with a noodle underline */
+  .link {
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.2em;
+    text-decoration-color: var(--line);
+    transition: text-decoration-color 0.15s;
+  }
+  .link:hover {
+    text-decoration-style: wavy;
+    text-decoration-color: var(--tomato);
+  }
+
+  /* pills / tags */
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.3rem 0.7rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    line-height: 1.2;
+    border: 2px solid var(--line);
+    border-radius: 999px;
+    background: var(--surface);
+    color: var(--fg);
+    white-space: nowrap;
+  }
+
+  /* die-cut sticker */
+  .sticker {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.45rem 0.85rem;
+    font-family: var(--font-display);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    background: var(--lime);
+    border: 3px solid var(--sticker-edge);
+    border-radius: 999px;
+    box-shadow:
+      0 0 0 2px var(--ink),
+      3px 4px 0 2px var(--ink);
+    rotate: var(--r, -3deg);
+    white-space: nowrap;
+  }
+
+  /* TODO notes for Gaurav: loud on purpose so they can't ship by accident */
+  .todo-note {
+    position: relative;
+    padding: 0.85rem 1rem 0.9rem;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    line-height: 1.45;
+    color: var(--ink);
+    background: repeating-linear-gradient(-45deg, #fff3a8 0 10px, #ffef8f 10px 20px);
+    border: 2px dashed var(--ink);
+    border-radius: var(--radius-sm);
+    rotate: -0.6deg;
+  }
+  .todo-note strong {
+    font-weight: 800;
+    letter-spacing: 0.04em;
+  }
+
+  .visually-hidden {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0 0 0 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+  }
+
+  .skip-link {
+    position: fixed;
+    top: 0.75rem;
+    left: 0.75rem;
+    z-index: 200;
+    transform: translateY(-200%);
+  }
+  .skip-link:focus-visible {
+    transform: none;
+  }
+
+  /* section header: [01] / kicker */
+  .kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .kicker .num {
+    display: inline-grid;
+    place-items: center;
+    min-width: 2.25rem;
+    height: 1.6rem;
+    padding-inline: 0.4rem;
+    background: var(--fg);
+    color: var(--bg);
+    border-radius: 6px;
+  }
+
+  /* hand-drawn noodle strokes */
+  .noodle {
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+}
+
+/* ------------------------------------------------------------------
+   motion primitives. Only run when JS is on and motion is OK.
+   ------------------------------------------------------------------ */
+
+@keyframes nn-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes nn-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.85) rotate(-4deg);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes nn-wiggle {
+  0%,
+  100% {
+    rotate: var(--r, 0deg);
+  }
+  25% {
+    rotate: calc(var(--r, 0deg) - 7deg);
+  }
+  60% {
+    rotate: calc(var(--r, 0deg) + 5deg);
+  }
+}
+
+@keyframes nn-blink {
+  0%,
+  60% {
+    opacity: 1;
+  }
+  61%,
+  100% {
+    opacity: 0.25;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .draw-on-load {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: nn-draw 0.9s var(--ease-out) 0.25s forwards;
+  }
+}

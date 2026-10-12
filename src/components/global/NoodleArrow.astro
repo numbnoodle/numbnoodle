@@ -1,0 +1,39 @@
+---
+/** A hand-drawn arrow with a noodle loop in it. Decorative; pair with sr text. */
+interface Props {
+  class?: string;
+  variant?: 1 | 2;
+  draw?: boolean;
+  delay?: number;
+}
+const { class: cls = '', variant = 1, draw = true, delay = 0 } = Astro.props;
+const paths = {
+  1: 'M5 33 C 20 33, 33 30, 44 21 C 54 12, 50 4, 43 7 C 34 11, 41 30, 62 31 C 78 32, 92 31, 108 30',
+  2: 'M5 30 C 18 34, 30 34, 40 26 C 50 18, 58 8, 66 12 C 74 16, 62 32, 56 26 C 50 20, 80 28, 108 29',
+};
+const head = variant === 1 ? 'M96 20 L109 30 L97 41' : 'M96 19 L109 29 L97 40';
+---
+
+<svg
+  viewBox="0 0 116 48"
+  class:list={['noodle-arrow', cls]}
+  aria-hidden="true"
+  focusable="false"
+  style={`--d:${delay}s`}
+>
+  <path class:list={['noodle', draw && 'draw-on-load']} pathLength="1" d={paths[variant]} stroke-width="5.5"></path>
+  <path class:list={['noodle', draw && 'draw-on-load']} pathLength="1" d={head} stroke-width="5.5"></path>
+</svg>
+
+<style>
+  .noodle-arrow {
+    display: inline-block;
+    width: 1.05em;
+    height: auto;
+    vertical-align: -0.02em;
+    overflow: visible;
+  }
+  .noodle-arrow :global(.draw-on-load) {
+    animation-delay: var(--d, 0s);
+  }
+</style>

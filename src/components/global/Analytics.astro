@@ -1,0 +1,26 @@
+---
+/**
+ * Optional analytics. Off unless PUBLIC_ANALYTICS is set at build time:
+ *   PUBLIC_ANALYTICS=plausible  PUBLIC_PLAUSIBLE_DOMAIN=numbnoodle.com
+ *   PUBLIC_ANALYTICS=amplitude  PUBLIC_AMPLITUDE_API_KEY=xxxxxxxx
+ * Scripts load after the page is idle, so they never block first paint.
+ */
+const provider = import.meta.env.PUBLIC_ANALYTICS as string | undefined;
+const plausibleDomain = (import.meta.env.PUBLIC_PLAUSIBLE_DOMAIN as string | undefined) ?? 'numbnoodle.com';
+const amplitudeKey = import.meta.env.PUBLIC_AMPLITUDE_API_KEY as string | undefined;
+const config = provider === 'plausible'
+  ? { provider, domain: plausibleDomain }
+  : provider === 'amplitude' && amplitudeKey
+    ? { provider, key: amplitudeKey }
+    : null;
+---
+
+{config && <script is:inline type="application/json" id="nn-analytics" set:html={JSON.stringify(config)} />}
+{
+  config && (
+    <script>
+      import { initAnalytics } from '@/lib/analytics';
+      initAnalytics();
+    </script>
+  )
+}

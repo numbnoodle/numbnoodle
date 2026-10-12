@@ -1,0 +1,18 @@
+---
+/** The logo: a lime tile with one noodle that spells "nun" if you squint. */
+interface Props {
+  class?: string;
+}
+const { class: cls = 'size-9' } = Astro.props;
+---
+
+<svg viewBox="0 0 32 32" class:list={['shrink-0', cls]} aria-hidden="true" focusable="false">
+  <rect x="1.5" y="1.5" width="29" height="29" rx="8" fill="var(--lime)" stroke="var(--ink)" stroke-width="2.5"></rect>
+  <path
+    d="M7.5 22.5v-7a3.6 3.6 0 0 1 7.2 0v2.6a2.15 2.15 0 0 0 4.3 0v-2.6a3.6 3.6 0 0 1 7.2 0"
+    fill="none"
+    stroke="var(--ink)"
+    stroke-width="2.75"
+    stroke-linecap="round"
+    stroke-linejoin="round"></path>
+</svg>

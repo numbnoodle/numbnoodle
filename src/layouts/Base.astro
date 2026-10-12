@@ -1,0 +1,124 @@
+---
+import { Font } from 'astro:assets';
+import '@/styles/global.css';
+import site from '@/content/site';
+import TopBar from '@/components/global/TopBar.astro';
+import CommandPalette from '@/components/global/CommandPalette.tsx';
+import Analytics from '@/components/global/Analytics.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** path only, e.g. "/work/coins-me" */
+  path?: string;
+  noindex?: boolean;
+  ogImage?: string;
+}
+
+const {
+  title = site.seo.title,
+  description = site.seo.description,
+  path = Astro.url.pathname,
+  noindex = false,
+  ogImage = '/og.png',
+} = Astro.props;
+
+const canonical = new URL(path, site.seo.siteUrl).href;
+const ogUrl = new URL(ogImage, site.seo.siteUrl).href;
+
+const personLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: site.person.name,
+  alternateName: site.person.handle,
+  url: site.seo.siteUrl,
+  image: ogUrl,
+  email: `mailto:${site.links.email}`,
+  jobTitle: site.person.role,
+  description: site.person.summary,
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Hyderabad',
+    addressCountry: 'IN',
+  },
+  worksFor: {
+    '@type': 'Organization',
+    name: 'Coins.me',
+    url: site.links.coins,
+  },
+  alumniOf: {
+    '@type': 'CollegeOrUniversity',
+    name: 'Methodist College of Engineering & Technology',
+  },
+  sameAs: [site.links.github, site.links.linkedin, site.links.x],
+  knowsAbout: site.toolbox.groups.flatMap((g) => g.items),
+};
+
+// Runs before first paint: theme + js flag, so nothing flashes.
+const bootScript = `(()=>{try{var d=document.documentElement;d.classList.add('js');var t=localStorage.getItem('nn-theme');if(t!=='light'&&t!=='dark'){t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'}d.dataset.theme=t;}catch(e){document.documentElement.dataset.theme='light'}})();`;
+---
+
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script is:inline set:html={bootScript} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex" />}
+    <meta name="author" content={site.person.name} />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content={site.seo.themeColorLight} media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content={site.seo.themeColorDark} media="(prefers-color-scheme: dark)" />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="numbnoodle" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`${site.seo.ogTitle} ${site.seo.ogSub}`} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@numbnoodlee" />
+    <meta name="twitter:creator" content="@numbnoodlee" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogUrl} />
+
+    <Font cssVariable="--nn-display" preload />
+    <Font cssVariable="--nn-body" />
+    <Font cssVariable="--nn-mono" />
+
+    <script type="application/ld+json" set:html={JSON.stringify(personLd)} />
+    <Analytics />
+  </head>
+  <body>
+    <a href="#main" class="skip-link btn btn-lime btn-sm">Skip to content</a>
+    <TopBar />
+    <main id="main" tabindex="-1" class="outline-none">
+      <slot />
+    </main>
+    <slot name="footer" />
+    <CommandPalette client:idle email={site.links.email} links={site.links} />
+    <script>
+      import site from '@/content/site';
+      const [first, ...rest] = site.consoleMessage;
+      const art = '  ╭─╮ ╭─╮ ╭─╮\n──╯ ╰─╯ ╰─╯ ╰──●  numbnoodle';
+      console.log(
+        `%c${art}%c\n\n${first}\n${rest.join('\n')}`,
+        'color:#c9f73a;background:#141311;font-family:monospace;font-weight:700;padding:4px 0',
+        'font-family:monospace;font-size:12px;line-height:1.6',
+      );
+    </script>
+  </body>
+</html>
