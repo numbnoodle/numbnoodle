@@ -183,10 +183,9 @@ export const hero = {
 };
 
 export const pipeline = {
-  kicker: 'The pipeline',
-  title: 'Idea → Design → Code → Ship → Grow',
-  intro:
-    'Most startups pass work down a line of people. I am the line. One noodle, no handoffs.',
+  kicker: 'The noodle pipeline',
+  /** The five words of the title are the station names, joined by noodles. */
+  intro: 'Most startups pass work down a line of people. I am the line. One noodle, no handoffs.',
   stations: [
     {
       id: 'idea',

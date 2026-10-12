@@ -1,0 +1,32 @@
+---
+interface Props {
+  num: string;
+  kicker: string;
+  id: string;
+  class?: string;
+}
+const { num, kicker, id, class: cls } = Astro.props;
+---
+
+<header class:list={['section-head', cls]}>
+  <p class="kicker"><span class="num">{num}</span>{kicker}</p>
+  <h2 id={id} class="section-title"><slot /></h2>
+  <slot name="after" />
+</header>
+
+<style is:global>
+  .section-title {
+    margin-top: 1rem;
+    font-size: var(--text-display);
+    line-height: var(--text-display--line-height);
+    letter-spacing: var(--text-display--letter-spacing);
+    font-weight: 800;
+  }
+  .section-intro {
+    margin-top: 1.25rem;
+    max-width: 44ch;
+    font-size: var(--text-lead);
+    line-height: 1.45;
+    color: var(--muted);
+  }
+</style>
