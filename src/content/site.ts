@@ -246,9 +246,9 @@ export const projects: Project[] = [
     accent: 'lime',
     assembledBy: 'Assembled by 1 human in Hyderabad',
     screenshot: {
-      // src: '/work/coins-me-home.webp',
-      alt: 'Coins.me app on a phone',
-      todo: 'Coins.me app screenshot, portrait (e.g. 1080×2340), saved as /public/work/coins-me-home.webp',
+      src: '/work/coins-me-home.webp',
+      alt: 'Coins.me home screen: dollar portfolio, savings earning 4.7%, investments and rewards',
+      todo: '',
     },
     metrics: [
       { value: 5, prefix: '~', suffix: 'K', label: 'monthly active users' },
@@ -280,7 +280,7 @@ export const projects: Project[] = [
         todo: 'Add 2–3 key flows (e.g. onboarding, saving, spending) and a before/after or wireframe → UI shot.',
         images: [
           { alt: 'Coins.me key flow in Figma', todo: 'Figma flow screenshot' },
-          { alt: 'Coins.me home screen on a phone', todo: 'App screenshot (PWA on a phone)' },
+          { src: '/work/coins-me-home.webp', alt: 'Coins.me home screen on a phone', todo: '' },
         ],
       },
       {
@@ -330,9 +330,9 @@ export const projects: Project[] = [
     accent: 'tomato',
     assembledBy: 'Assembled by a founding team of 3',
     screenshot: {
-      // src: '/work/p2p-me-home.webp',
-      alt: 'P2P.me app on a phone',
-      todo: 'P2P.me app screenshot, portrait (e.g. 1080×2340), saved as /public/work/p2p-me-home.webp',
+      src: '/work/p2p-me-home.webp',
+      alt: 'P2P.me home screen: USDC balance in Brazilian reais, wallet actions, and Buy, Sell and Scan & Pay',
+      todo: '',
     },
     metrics: [
       { value: 250, suffix: 'K', label: 'users' },
@@ -368,7 +368,7 @@ export const projects: Project[] = [
         todo: 'Add the core flows you designed and a screen or two.',
         images: [
           { alt: 'P2P.me app flow in Figma', todo: 'Figma flow screenshot' },
-          { alt: 'P2P.me app screen', todo: 'App screenshot' },
+          { src: '/work/p2p-me-home.webp', alt: 'P2P.me home screen on a phone', todo: '' },
         ],
       },
       {
