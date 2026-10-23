@@ -55,6 +55,7 @@ House rule, also written at the top of the file: **every claim must be true.** P
 Each entry in `projects` is a launch card on the homepage and a case study at `/work/<slug>`.
 
 - `slug` is typed as `'coins-me' | 'p2p-me'`. Adding a third project means widening that type.
+- `logo`: square app icon in `public/logos/`, shown as a tile on the launch card, the phone placeholder and the case header.
 - `pitch`, `role`, `period`, `assembledBy`, `hats` (the pills), `accent` (`lime` or `tomato`).
 - `metrics`: `{ value, prefix?, suffix?, label }`. The odometer rolls up to `value`, so `{ value: 60, prefix: '$', suffix: 'M+' }` renders `$60M+`. `metricsLabel` and `metricsNote` sit above them.
 - `screenshot`: the phone on the launch card. See [Screenshots](#screenshots).
@@ -90,7 +91,7 @@ screenshot: {
 
 ### Resume
 
-Drop it at **`public/resume.pdf`**. The hero, the contact poster and the palette's `resume` command all link to `/resume.pdf` (from `links.resume`). Until the file exists, those links 404.
+It lives at **`public/gauravpawar-resume.pdf`**. The hero, the contact poster and the palette's `resume` command all link to it via `links.resume`, and the download buttons save it as `gauravpawar-resume.pdf`.
 
 ### Gotchas
 
@@ -207,7 +208,7 @@ It's a static site: build with `npm run build`, serve `dist/`. `dist/404.html` i
 
 **Netlify**
 
-Connect the repo. `netlify.toml` already sets the build command, `dist` and `NODE_VERSION=22`.
+Connect the repo. `netlify.toml` already sets the build command, `dist` and `NODE_VERSION=22`. It also geo-routes `/go/p2p` (the P2P.me link): India goes to p2p.lol, everyone else to p2p.me. On hosts without country rules, `src/pages/go/p2p.astro` falls back to a time-zone guess.
 
 Both hosts install devDependencies by default, and the build needs them (`astro check` type-checks the Playwright tests). Don't set `NODE_ENV=production` for the install step.
 

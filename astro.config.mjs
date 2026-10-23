@@ -14,7 +14,7 @@ export default defineConfig({
   build: { format: 'file', inlineStylesheets: 'auto' },
   integrations: [
     react(),
-    sitemap({ filter: (page) => !page.includes('/404') }),
+    sitemap({ filter: (page) => !page.includes('/404') && !page.includes('/go/') }),
   ],
   vite: { plugins: [tailwindcss()] },
   fonts: [

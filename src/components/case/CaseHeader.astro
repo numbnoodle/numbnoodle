@@ -47,9 +47,12 @@ const stampText = `CASE FILE ${num} · ${p.urlLabel.toUpperCase()} · `;
 
     <div class="case-file__body">
       <div class="case-file__main">
-        <p class="label case-file__role">
-          {p.role}{p.period && <span class="case-file__period"> · {p.period}</span>}
-        </p>
+        <div class="case-file__brand">
+          <img class="logo-tile" src={p.logo} alt="" width="44" height="44" decoding="async" />
+          <p class="label case-file__role">
+            {p.role}{p.period && <span class="case-file__period"> · {p.period}</span>}
+          </p>
+        </div>
         <h1 id="case-title" class="case-file__name">{p.name}</h1>
         <p class="case-file__pitch">{p.pitch}</p>
         {p.pitchTodo && <TodoNote class="case-file__todo">{p.pitchTodo}</TodoNote>}
@@ -208,6 +211,11 @@ const stampText = `CASE FILE ${num} · ${p.urlLabel.toUpperCase()} · `;
       gap: 3.5rem;
       padding: 2.75rem 2.75rem 3rem;
     }
+  }
+  .case-file__brand {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
   }
   .case-file__role {
     color: var(--muted);

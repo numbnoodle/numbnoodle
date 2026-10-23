@@ -33,7 +33,7 @@ if (image.src && image.src.startsWith('/')) {
 
 {
   image.src ? (
-    <figure class="case-shot">
+    <figure class:list={['case-shot', height > width && 'case-shot--portrait', width > height * 1.5 && 'case-shot--wide']}>
       <img src={image.src} alt={image.alt} width={width} height={height} loading="lazy" decoding="async" />
       <figcaption class="label case-shot__cap">fig {fig}</figcaption>
     </figure>
@@ -72,6 +72,13 @@ if (image.src && image.src.startsWith('/')) {
     border: var(--bw) solid var(--line);
     border-radius: var(--radius);
     box-shadow: 5px 5px 0 0 var(--shadow);
+  }
+  .case-shot--portrait img {
+    max-width: 18rem;
+    border-radius: 1.6rem;
+  }
+  .case-shot--wide {
+    grid-column: 1 / -1;
   }
   .case-shot__cap {
     margin-top: 0.7rem;

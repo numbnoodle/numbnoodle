@@ -1,6 +1,6 @@
 # Netlify: static Astro build. Response headers live in public/_headers
 # (shared with Cloudflare Pages). dist/404.html is served for unknown paths
-# automatically, so no redirect rules are needed.
+# automatically.
 
 [build]
   command = "npm run build"
@@ -8,3 +8,18 @@
 
 [build.environment]
   NODE_VERSION = "22"
+
+# P2P.me runs on p2p.lol in India. Geo-route the outbound link at the edge;
+# src/pages/go/p2p.astro is the fallback for hosts without country rules.
+[[redirects]]
+  from = "/go/p2p"
+  to = "https://p2p.lol"
+  status = 302
+  force = true
+  conditions = {Country = ["IN"]}
+
+[[redirects]]
+  from = "/go/p2p"
+  to = "https://p2p.me"
+  status = 302
+  force = true
