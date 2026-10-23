@@ -117,8 +117,18 @@ const { shipped, projects } = site;
       padding: 2.5rem 2.75rem 2.75rem;
     }
   }
+  .box__brand {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+  }
   .box__role {
     color: var(--muted);
+  }
+  .phone__brand {
+    display: grid;
+    justify-items: start;
+    gap: 0.9rem;
   }
   .box__period {
     white-space: nowrap;
@@ -233,7 +243,7 @@ const { shipped, projects } = site;
     border-radius: 1.6rem;
     background: var(--paper-hi);
   }
-  .phone__screen img {
+  .phone__screen > img {
     width: 100%;
     height: 100%;
     object-fit: cover;

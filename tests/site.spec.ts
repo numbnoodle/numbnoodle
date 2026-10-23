@@ -62,7 +62,7 @@ test.describe('home', () => {
     await page.goto('/');
     const hrefs = [
       'https://app.coins.me',
-      'https://p2p.me',
+      '/go/p2p',
       'https://github.com/numbnoodle',
       'https://www.linkedin.com/in/gaurav-9b1655198',
       'https://x.com/numbnoodlee',
@@ -71,7 +71,7 @@ test.describe('home', () => {
       await expect(page.locator(`a[href="${href}"]`).first(), href).toBeAttached();
     }
     // the mailto may carry a ?subject=, so match the start
-    await expect(page.locator('a[href^="mailto:gauravpawar3102@gmail.com"]').first()).toBeAttached();
+    await expect(page.locator('a[href^="mailto:shoyomode@gmail.com"]').first()).toBeAttached();
   });
 
   test('P2P.me card frames its numbers as company outcomes', async ({ page }) => {
@@ -158,7 +158,7 @@ test.describe('without JavaScript', () => {
     }
     await expect(page.getByRole('article', { name: 'Coins.me' })).toBeVisible();
     await expect(page.getByRole('article', { name: 'P2P.me' })).toBeVisible();
-    await expect(page.locator('a[href^="mailto:gauravpawar3102@gmail.com"]').first()).toBeVisible();
+    await expect(page.locator('a[href^="mailto:shoyomode@gmail.com"]').first()).toBeVisible();
   });
 });
 

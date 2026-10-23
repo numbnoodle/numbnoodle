@@ -357,6 +357,18 @@
     white-space: nowrap;
   }
 
+  /* product app-icon tile */
+  .logo-tile {
+    flex: none;
+    width: 2.75rem;
+    height: 2.75rem;
+    border: var(--bw) solid var(--line);
+    border-radius: 0.7rem;
+    box-shadow: 3px 3px 0 0 var(--line);
+    background: var(--paper-hi);
+    rotate: -4deg;
+  }
+
   /* die-cut sticker */
   .sticker {
     display: inline-flex;

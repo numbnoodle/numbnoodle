@@ -46,6 +46,8 @@ export interface Project {
   name: string;
   url: string;
   urlLabel: string;
+  /** Square app icon, served from /public/logos. */
+  logo: string;
   role: string;
   period?: string;
   pitch: string;
@@ -111,13 +113,14 @@ export const person = {
 };
 
 export const links = {
-  email: 'gauravpawar3102@gmail.com',
+  email: 'shoyomode@gmail.com',
   github: 'https://github.com/numbnoodle',
   linkedin: 'https://www.linkedin.com/in/gaurav-9b1655198',
   x: 'https://x.com/numbnoodlee',
-  resume: '/resume.pdf',
+  resume: '/gauravpawar-resume.pdf',
   coins: 'https://app.coins.me',
-  p2p: 'https://p2p.me',
+  /** Geo-routed in netlify.toml: p2p.lol in India, p2p.me everywhere else. */
+  p2p: '/go/p2p',
 };
 
 export const seo = {
@@ -142,7 +145,7 @@ export const nav = [
 export const hero = {
   status: {
     label: 'currently',
-    text: 'building coins.me · open to founding-team roles',
+    text: 'building coins.me · open to work on cool stuff',
   },
   /** Headline pieces. The arrows between them are drawn as noodles. */
   headline: {
@@ -182,7 +185,7 @@ export const hero = {
   ctas: {
     primary: { label: 'See what I’ve shipped', href: '#shipped' },
     secondary: { label: 'Get in touch', href: '#contact' },
-    resume: { label: 'Download resume', href: '/resume.pdf' },
+    resume: { label: 'Download resume', href: links.resume },
   },
 };
 
@@ -235,10 +238,11 @@ export const projects: Project[] = [
     name: 'Coins.me',
     url: 'https://app.coins.me',
     urlLabel: 'app.coins.me',
+    logo: '/logos/coins-me.svg',
     role: 'Founder · Product, Engineering & Growth',
     period: 'Now · solo',
     pitch:
-      'A progressive web app that helps people in markets with currency instability save and spend in dollars.',
+      'A dollar account for everyday life: save instantly, earn while you hold, and pay by QR in your local money. No bank, no fees, no ID.',
     accent: 'lime',
     assembledBy: 'Assembled by 1 human in Hyderabad',
     screenshot: {
@@ -284,8 +288,10 @@ export const projects: Project[] = [
         title: 'What I built',
         body: [
           'The full stack: the PWA frontend, the backend APIs and the data layer, built and maintained by one person.',
+          'The app is React and Vite with Tailwind and Radix primitives, TanStack Query for server state and i18next for multiple languages. Onchain it runs on thirdweb and viem: Morpho vaults for yield on dollar balances and Uniswap for swaps. Identity checks use zkPassport, Anon Aadhaar and Reclaim, so verification works without uploading documents.',
         ],
-        todo: 'Name the actual stack used for Coins.me (from your toolbox) and one hard technical problem you solved.',
+        points: ['React · Vite · Tailwind', 'thirdweb · viem', 'Morpho yield', 'Uniswap swaps', 'zk identity checks', 'Amplitude'],
+        todo: 'Add one hard technical problem you solved and how.',
       },
       {
         id: 'shipped',
@@ -314,13 +320,13 @@ export const projects: Project[] = [
   {
     slug: 'p2p-me',
     name: 'P2P.me',
-    url: 'https://p2p.me',
+    url: links.p2p,
     urlLabel: 'p2p.me',
+    logo: '/logos/p2p-me.svg',
     role: 'Founding Engineer · 1 of 3 on the founding team',
     period: 'Jun 2023 – Sep 2026',
     pitch:
-      'Taken from an early-stage idea to a live platform by a founding team of three: me and two co-founders.',
-    pitchTodo: 'Add a one-line description of what P2P.me does.',
+      'A decentralized on/off ramp: USDC to local money and back, fast enough to pay at any store, without bank-freeze worries. Taken from idea to live platform by a founding team of three.',
     accent: 'tomato',
     assembledBy: 'Assembled by a founding team of 3',
     screenshot: {
@@ -341,8 +347,10 @@ export const projects: Project[] = [
       {
         id: 'problem',
         title: 'The problem',
-        body: [],
-        todo: 'Describe the problem P2P.me solves and who it’s for.',
+        body: [
+          'Getting between crypto and local money usually means a centralized exchange: KYC queues, slow withdrawals, and bank accounts frozen over flagged peer-to-peer trades.',
+          'P2P.me is a decentralized fiat on/off ramp. People swap USDC and their local currency directly with merchants, with the trade enforced by smart contracts on Base, so it’s fast enough to pay at a shop counter.',
+        ],
       },
       {
         id: 'role',
@@ -366,8 +374,10 @@ export const projects: Project[] = [
       {
         id: 'built',
         title: 'What I built',
-        body: ['Hands-on frontend and backend development on the platform.'],
-        todo: 'Name the parts of the system you built and the stack.',
+        body: [
+          'Hands-on development across the platform: the user app (React, Vite, Tailwind), the protocol’s Solidity contracts (Hardhat, OpenZeppelin, on Base), the landing site (Astro) and a funds-recovery tool (Next.js, viem).',
+        ],
+        points: ['User app', 'Smart contracts', 'Landing site', 'Funds recovery'],
       },
       {
         id: 'shipped',
@@ -497,7 +507,7 @@ export const contact = {
   kicker: 'Contact',
   title: 'Let’s build something.',
   intro:
-    'Need a founding engineer who also designs, ships and does growth? I’m open to founding-team roles. Email is fastest.',
+    'Need someone who designs, builds, ships and does growth? I’m open to work on cool stuff. Email is fastest.',
   copyLabel: 'click to copy',
   copiedLabel: 'copied',
 };
@@ -515,7 +525,7 @@ export const notFound = {
 export const consoleMessage = [
   'Hey, curious engineer.',
   'You opened devtools on a portfolio, which tells me you’re my kind of person.',
-  `I'm open to founding-team roles. Say hi: ${'gauravpawar3102@gmail.com'}`,
+  `I'm open to work on cool stuff. Say hi: ${'shoyomode@gmail.com'}`,
   'Psst: press / or ⌘K, then try "noodle mode".',
 ];
 

@@ -1,0 +1,21 @@
+---
+// Netlify answers /go/p2p with a country-based redirect before this page is
+// reached. Everywhere else, guess India from the time zone.
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="robots" content="noindex" />
+    <meta http-equiv="refresh" content="0; url=https://p2p.me" />
+    <script is:inline>
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      location.replace(tz === 'Asia/Kolkata' || tz === 'Asia/Calcutta' ? 'https://p2p.lol' : 'https://p2p.me');
+    </script>
+    <title>P2P.me</title>
+  </head>
+  <body>
+    <a href="https://p2p.me">p2p.me</a>
+  </body>
+</html>
