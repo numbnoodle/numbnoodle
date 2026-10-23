@@ -94,7 +94,7 @@ export interface Principle {
 
 export const flags = {
   /** Visible TODO notes on the site. Set to false once you've filled them in. */
-  showTodoNotes: true,
+  showTodoNotes: false,
 };
 
 export const person = {
@@ -262,8 +262,9 @@ export const projects: Project[] = [
         title: 'The problem',
         body: [
           'In markets with currency instability, holding your money in the local currency is a bet you didn’t choose to make. Coins.me is a progressive web app that helps people in those markets save and spend in dollars.',
+          'The first markets are India, Indonesia, Brazil, Argentina and Venezuela. The options there were bad in different ways: a bank account loses value, a centralized exchange wants your ID and can freeze withdrawals, and peer-to-peer crypto trades can get your bank account frozen. I wanted a dollar account that needs none of that and still lets you pay in local money.',
         ],
-        todo: 'Add the specific markets, the user you met in research, and why existing options weren’t good enough.',
+        points: ['India (INR)', 'Indonesia (IDR)', 'Brazil (BRL)', 'Argentina (ARS)', 'Venezuela'],
       },
       {
         id: 'role',
@@ -276,12 +277,12 @@ export const projects: Project[] = [
       {
         id: 'designed',
         title: 'What I designed',
-        body: ['The UX flows and UI for the whole app.'],
-        todo: 'Add 2–3 key flows (e.g. onboarding, saving, spending) and a before/after or wireframe → UI shot.',
-        images: [
-          { alt: 'Coins.me key flow in Figma', todo: 'Figma flow screenshot' },
-          { src: '/work/coins-me-home.webp', alt: 'Coins.me home screen on a phone', todo: '' },
+        body: [
+          'The UX flows and UI for the whole app. The home screen is the product in one view: a dollar portfolio with its local-currency value underneath, then Deposit, Withdraw and Pay.',
+          'Three flows carry the app. Deposit buys USDC with local money through the P2P.me ramp. Savings puts dollars in a yield vault, shown as one plain line: “Earn 4.7% on your dollars”. Pay scans a merchant’s QR and settles in local currency. Investments, rewards and referrals sit below them, never in front.',
         ],
+        points: ['Deposit with local money', 'Save and earn on dollars', 'Pay by QR', 'Invest and swap', 'Refer ten friends'],
+        images: [{ src: '/work/coins-me-home.webp', alt: 'Coins.me home screen on a phone', todo: '' }],
       },
       {
         id: 'built',
@@ -289,15 +290,18 @@ export const projects: Project[] = [
         body: [
           'The full stack: the PWA frontend, the backend APIs and the data layer, built and maintained by one person.',
           'The app is React and Vite with Tailwind and Radix primitives, TanStack Query for server state and i18next for multiple languages. Onchain it runs on thirdweb and viem: Morpho vaults for yield on dollar balances and Uniswap for swaps. Identity checks use zkPassport, Anon Aadhaar and Reclaim, so verification works without uploading documents.',
+          'The hardest part was swaps. I started on Uniswap’s AlphaRouter, which errored in the browser and pulled a heavy dependency into a mobile PWA. I replaced it with my own router on top of Uniswap’s QuoterV2: batched quotes across routes, a fresh quote right before the swap is signed, and price impact shown before you confirm. When a token route kept failing, I switched those swaps off instead of leaving a broken path live.',
         ],
-        points: ['React · Vite · Tailwind', 'thirdweb · viem', 'Morpho yield', 'Uniswap swaps', 'zk identity checks', 'Amplitude'],
-        todo: 'Add one hard technical problem you solved and how.',
+        points: ['React · Vite · Tailwind', 'thirdweb · viem', 'Morpho yield', 'Uniswap QuoterV2 router', 'zk identity checks', 'Amplitude'],
       },
       {
         id: 'shipped',
         title: 'How it shipped',
-        body: ['I run deployment and releases myself. It’s live at app.coins.me.'],
-        todo: 'Add your release cadence and how you ship safely without a team.',
+        body: [
+          'I run deployment and releases myself. It’s live at app.coins.me.',
+          'Without a team, the process is the safety net. Every change goes on a feature branch, into dev, then to main through a pull request, and an AI reviewer (Cursor Bugbot) checks each one before it merges. Config lives in environment variables, contract versions are pinned, and Netlify builds every merge. That loop shipped around 350 commits in the first six months.',
+        ],
+        points: ['Feature branch, dev, main', 'AI review on every PR', 'Env-driven config', 'Netlify deploys'],
       },
       {
         id: 'grew',
@@ -305,15 +309,18 @@ export const projects: Project[] = [
         body: [
           'Coins.me has ~5K monthly active users and ~500 daily active users, globally.',
           'I planned the Coins.me 2.0 launch: a creator launch playbook, video briefs, and region-specific marketing and app campaigns.',
+          'The campaigns are built per market. Indian users see bank-freeze protection on Buy and Sell, because that’s their biggest fear with peer-to-peer trades. Referrals (“bring ten friends aboard”) and in-app banners carry each launch, and Amplitude events tell me which ones moved people.',
         ],
-        points: ['Creator launch playbook', 'Video briefs', 'Region-specific marketing campaigns', 'Region-specific app campaigns'],
-        todo: 'Add which regions, which channels worked, and a growth chart if you can share one.',
+        points: ['Creator launch playbook', 'Video briefs', 'Region-specific marketing campaigns', 'Region-specific app campaigns', 'Referrals'],
       },
       {
         id: 'learned',
         title: 'What I learned',
-        body: [],
-        todo: 'In your words: what did running every function solo teach you? What would you do differently?',
+        body: [
+          'Build on rails you trust. Coins.me sits on the P2P.me ramp, Morpho and Uniswap instead of rebuilding them, so my time goes into the part only I can build: the product people actually touch.',
+          'Process replaces teammates. Running solo doesn’t mean skipping review, it means automating it. Branches, PRs and an AI reviewer catch what a second engineer would.',
+          'Turning something off is a feature. Halting a broken swap route or pausing buys during a migration kept user trust intact. Next time I’d set up analytics on day one, not after launch.',
+        ],
       },
     ],
   },
@@ -364,10 +371,13 @@ export const projects: Project[] = [
       {
         id: 'designed',
         title: 'What I designed',
-        body: ['The app’s UX flows and UI.'],
-        todo: 'Add the core flows you designed and a screen or two.',
+        body: [
+          'The app’s UX flows and UI, wireframes first. Each screen starts as a sketch with its behaviour written next to it, so engineering gets the logic along with the layout.',
+          'The home screen shows one price at a time (buy or sell), the balance, and four actions: wallet, deposit, withdraw and support, which goes straight to a Telegram chat. Below that are processing orders and your transaction limits. My Limits turns verification into rewards: link LinkedIn or Instagram through a zero-knowledge proof and your limit goes up, with no data stored. Refer & Earn pays 1% of friends’ volume, and Transactions groups orders by status, with the ones that need action pinned on top.',
+        ],
+        points: ['Home and quick actions', 'Limits via ZK verification', 'Refer & Earn', 'Transactions by status', 'Cross-chain deposits'],
         images: [
-          { alt: 'P2P.me app flow in Figma', todo: 'Figma flow screenshot' },
+          { src: '/work/p2p-me-wireframes.webp', alt: 'P2P.me wireframes: home, My Limits, Refer & Earn and Transactions, annotated with interaction notes', todo: '' },
           { src: '/work/p2p-me-home.webp', alt: 'P2P.me home screen on a phone', todo: '' },
         ],
       },
@@ -376,14 +386,18 @@ export const projects: Project[] = [
         title: 'What I built',
         body: [
           'Hands-on development across the platform: the user app (React, Vite, Tailwind), the protocol’s Solidity contracts (Hardhat, OpenZeppelin, on Base), the landing site (Astro) and a funds-recovery tool (Next.js, viem).',
+          'In the contracts I worked on onchain identity and trust: zero-knowledge Aadhaar verification, so a user can prove they’re a verified Indian resident without revealing who they are, and the recommendation system, where users vouch for each other and build reputation. In the app I shipped the token launch countdown and sale flows, and bank-freeze protection for Indian users.',
         ],
-        points: ['User app', 'Smart contracts', 'Landing site', 'Funds recovery'],
+        points: ['User app', 'Smart contracts', 'ZK Aadhaar verification', 'Reputation system', 'Landing site', 'Funds recovery'],
       },
       {
         id: 'shipped',
         title: 'How it shipped',
-        body: ['Deployment and production maintenance, keeping a live platform running as it grew.'],
-        todo: 'Add a story about keeping production healthy as usage scaled.',
+        body: [
+          'Deployment and production maintenance, keeping a live platform running as it grew.',
+          'Live money finds edge cases staging doesn’t, so shipping included staying on call: contract fixes, order event updates for the indexer, and releases through reviewed pull requests. When we moved users off the old app, I built a separate recovery tool so anyone with funds there could still get them out.',
+        ],
+        points: ['Production fixes', 'Order event indexing', 'Funds recovery tool', 'Netlify deploys'],
       },
       {
         id: 'grew',
@@ -391,15 +405,18 @@ export const projects: Project[] = [
         body: [
           'I contributed to distribution and marketing campaigns across multiple countries.',
           'Company outcomes I was part of: 250K users, 30K+ monthly active users, $60M+ cumulative transaction volume, 15+ countries and ~$8M raised.',
+          'My part was the product surface of each campaign. I built the $P2P token launch countdown and sale banners across the app and landing site, Spanish-language support for Latin American users, the bank-freeze protection campaign for India, and a merchant recruitment banner to grow the supply side.',
         ],
         points: ['250K users', '30K+ MAU', '$60M+ cumulative volume', '15+ countries', '~$8M raised'],
-        todo: 'Add which campaigns you worked on and what you did in them.',
       },
       {
         id: 'learned',
         title: 'What I learned',
-        body: [],
-        todo: 'In your words: what did going from idea to 250K users on a three-person founding team teach you?',
+        body: [
+          'On a team of three, there’s no “not my job”. I went from wireframes to Solidity to landing pages in the same week, and that range is what let us move fast.',
+          'Trust is the product in money apps. Most of what we built (ZK verification, reputation, limits) exists to make strangers safe trading with each other, and every bug fix in production was really a trust fix.',
+          'Distribution has to be built like a feature. The campaigns that worked lived inside the app, not just around it.',
+        ],
       },
     ],
   },
